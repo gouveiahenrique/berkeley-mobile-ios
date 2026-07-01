@@ -152,8 +152,11 @@ struct BMDetailHeaderView: View {
     
     @ViewBuilder
     private var timeView: some View {
-        if let timePart = event.dateString.components(separatedBy: " / ").last {
-             EventDetailRow(systemImageName: "clock", text: timePart)
+        let timePart = event.dateString.components(separatedBy: " / ").last
+        if event.isAllDay == true || timePart == "All Day" {
+            AllDayBadgeView()
+        } else if let timePart {
+            EventDetailRow(systemImageName: "clock", text: timePart)
         }
     }
 
@@ -189,6 +192,25 @@ struct EventDetailRow: View {
 }
 
 
+// MARK: - AllDayBadgeView
+
+struct AllDayBadgeView: View {
+    var body: some View {
+        Text("All Day")
+            .font(Font(BMFont.bold(12)))
+            .foregroundStyle(Color(BMColor.Calendar.dayOfWeekHeader))
+            .padding(.horizontal, 10)
+            .padding(.vertical, 4)
+            .background(
+                Capsule()
+                    .fill(Color(BMColor.Calendar.dayOfWeekHeader).opacity(0.15))
+            )
+            .accessibilityLabel("All Day")
+            .accessibilityAddTraits(.isStaticText)
+    }
+}
+
+
 // MARK: - BMDetailDescriptionView
 
 struct BMDetailDescriptionView: View {
@@ -209,6 +231,33 @@ struct BMDetailDescriptionView: View {
     }
 }
 
-#Preview {
+#Preview("Timed Event") {
     EventDetailView(event: BMEventCalendarEntry.sampleEntry)
+}
+
+#Preview("All Day Event (isAllDay flag)") {
+    let entry = BMEventCalendarEntry.sampleEntry
+    entry.isAllDay = true
+    return EventDetailView(event: entry)
+}
+
+#Preview("All Day Event (heuristic)") {
+    var calendar = Calendar.current
+    calendar.timeZone = TimeZone.current
+    let start = calendar.startOfDay(for: Date())
+    var endComponents = calendar.dateComponents([.year, .month, .day], from: Date())
+    endComponents.hour = 23
+    endComponents.minute = 59
+    endComponents.second = 59
+    let end = calendar.date(from: endComponents) ?? Date()
+    let entry = BMEventCalendarEntry(
+        name: BMEventCalendarEntry.sampleEntry.name,
+        date: start,
+        end: end,
+        descriptionText: BMEventCalendarEntry.sampleEntry.descriptionText,
+        location: BMEventCalendarEntry.sampleEntry.location,
+        type: BMEventCalendarEntry.sampleEntry.type
+    )
+    entry.isAllDay = nil
+    return EventDetailView(event: entry)
 }
