@@ -152,8 +152,24 @@ struct BMDetailHeaderView: View {
     
     @ViewBuilder
     private var timeView: some View {
-        if let timePart = event.dateString.components(separatedBy: " / ").last {
-             EventDetailRow(systemImageName: "clock", text: timePart)
+        let isAllDay = event.isAllDay == true
+            || (event.isAllDay == nil
+                && event.dateString.components(separatedBy: " / ").last == "All Day")
+
+        if isAllDay {
+            HStack {
+                Image(systemName: "clock")
+                    .font(.system(size: 16))
+                Text("All Day")
+                    .font(Font(BMFont.bold(12)))
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 3)
+                    .background(Color.gray.opacity(0.2))
+                    .clipShape(Capsule())
+                    .accessibilityLabel("All Day")
+            }
+        } else if let timePart = event.dateString.components(separatedBy: " / ").last {
+            EventDetailRow(systemImageName: "clock", text: timePart)
         }
     }
 
@@ -211,4 +227,19 @@ struct BMDetailDescriptionView: View {
 
 #Preview {
     EventDetailView(event: BMEventCalendarEntry.sampleEntry)
+}
+
+#Preview("All Day Event") {
+    let allDayEntry = BMEventCalendarEntry(
+        name: "University Holiday",
+        date: Date().getStartOfDay(),
+        end: nil,
+        descriptionText: "Campus closed.",
+        location: "UC Berkeley",
+        registerLink: nil,
+        imageURL: nil,
+        sourceLink: nil,
+        isAllDay: true
+    )
+    EventDetailView(event: allDayEntry)
 }
