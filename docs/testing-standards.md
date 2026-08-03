@@ -1,130 +1,55 @@
 # Testing Standards
 
-**Last updated:** 2026-07-31
+**Last updated:** 2026-08-03
 
 ## Current State
 
-Berkeley Mobile iOS has **no automated test suite** at this time. The Xcode scheme's `<TestAction>` block has an empty `<Testables>` list, and no `XCTestCase` subclasses exist in the repository. There is no separate test target in the Xcode project.
+The repository does not implement an automated test suite. Repository evidence:
 
-All verification is currently done manually by running the app in the iOS Simulator or on-device.
+- The shared Xcode scheme (`berkeley-mobile.xcodeproj/xcshareddata/xcschemes/berkeley-mobile.xcscheme`) has an empty `<Testables>` list inside its `<TestAction>` block.
+- No file in the repository defines a subclass of `XCTestCase` (searched all tracked `*.swift` files).
+- No `berkeley-mobileTests` or `berkeley-mobileUITests` target exists in `berkeley-mobile.xcodeproj/project.pbxproj` (only `berkeley-mobile` and `BerkeleyMobileWidgetExtension` native targets are defined).
 
-## Recommended Testing Approach
+All verification is currently performed manually (running the app in the iOS Simulator or on-device) — this is inferred from the absence of any test infrastructure, not from direct documentation of a manual QA process.
 
-When adding tests to this project, follow the conventions below.
+## Guidance for Introducing Tests
 
-### Testing Framework
+The sections below describe how tests would integrate with this codebase's existing patterns, for use when a test target is added. This is guidance derived from platform capability and observed code shape, not a description of an existing test suite.
 
-- **Unit Tests:** XCTest (built into Xcode) — `import XCTest`
-- **UI Tests:** XCUITest (built into Xcode) — separate target, run against the simulator
-- **No third-party testing libraries** are currently configured
+### Testing Framework (Platform Capability)
 
-### Test Target Setup
+- **Unit Tests:** XCTest is bundled with Xcode and would be the natural choice (`import XCTest`) — this is a platform capability, not a repository implementation.
+- **UI Tests:** XCUITest is bundled with Xcode for UI-level testing — platform capability, not implemented here.
+- No third-party testing library (e.g. Quick/Nimble) appears in `Podfile.lock` or `Package.resolved`.
 
-Create an Xcode unit test target named `berkeley-mobileTests` and a UI test target named `berkeley-mobileUITests`. Add them to the existing scheme's `<Testables>` list.
+### Adding a Test Target
 
-### Test Organization
+To add tests, a new Xcode unit test target (and optionally a UI test target) would need to be created in `berkeley-mobile.xcodeproj` and added to the existing scheme's `<Testables>` list — none of this exists today.
 
-```
-berkeley-mobileTests/
-├── Data/
-│   ├── BMErrorTests.swift         # Error enum and LocalizedError descriptions
-│   ├── DataManagerTests.swift     # Fetch interval and caching logic
-│   └── ItemProtocols/             # Protocol conformance tests
-├── ViewModels/
-│   ├── SafetyViewModelTests.swift # Filter logic (time/crime filter state)
-│   ├── EventsViewModelTests.swift # Calendar entry state
-│   └── DiningHallsViewModelTests.swift
-└── Utils/
-    ├── DateExtensionTests.swift    # Date+Extension helpers
-    └── WeeklyHoursTests.swift      # Open/closed time calculations
-```
+### Testability Considerations Observed in Current Code
 
-### Test Naming Conventions
+- ViewModels are constructed via the Factory (`FactoryKit`) DI container (`berkeley-mobile/BerkeleyMobile+Injection.swift`), which supports registering test doubles by overriding a `Factory<T>` registration — this is a capability of the Factory library, and no test code exercising it currently exists in the repository.
+- Some model types define static sample/mock factory methods for use in SwiftUI `#Preview` blocks (e.g. `BMEventCalendarEntry.sampleEntry` in `berkeley-mobile/Events/EventDataSource/BMEventCalendarEntry.swift`). These exist for preview purposes; no evidence was found that they are consumed by any test code, since no test code exists.
 
-Follow `test_<methodUnderTest>_<scenario>_<expectedOutcome>` or plain descriptive names:
+### Running Tests (Platform Capability)
 
-```swift
-// File: SafetyViewModelTests.swift
-func test_updateFilterState_withNoFilters_returnAllLogs() { ... }
-func test_updateFilterState_withTodayFilter_returnsOnlyTodayLogs() { ... }
-func test_getSafetyLogState_withKnownCrime_returnsCorrectFilterState() { ... }
-```
-
-### Test Structure (AAA Pattern)
-
-```swift
-func test_updateFilterState_withNoFilters_returnAllLogs() {
-    // Arrange
-    let viewModel = SafetyViewModel()
-    let logs = [BMSafetyLog.mock(), BMSafetyLog.mock()]
-    viewModel.safetyLogs = logs
-    viewModel.selectedSafetyLogFilterStates = []
-
-    // Act
-    // (filter update is triggered by didSet on selectedSafetyLogFilterStates)
-
-    // Assert
-    XCTAssertEqual(viewModel.filteredSafetyLogs.count, logs.count)
-}
-```
-
-### Mocking Strategy
-
-This project uses constructor-injected dependencies via the Factory DI container, which makes unit testing straightforward:
-
-```swift
-// Override the container for tests
-Container.shared.safetyViewModel.register { MockSafetyViewModel() }
-
-// Or inject directly in initializers
-let viewModel = DiningHallsViewModel(db: MockFirestore())
-```
-
-- **Unit tests:** mock all Firestore calls — do not make real network requests in unit tests.
-- Use `static func getSampleSafetyLog()` helper methods (already present on some models) as factories for test data.
-- For `@Observable` classes, test public state changes directly — no need to observe publishers in XCTest.
-
-### What to Test First
-
-Priority areas when introducing tests:
-
-1. **Filter/sort logic** in ViewModels (`SafetyViewModel.updateFilterState`, `DiningHallsViewModel` meal filtering)
-2. **Date/time utilities** (`Date+Extension`, `WeeklyHours`, `DayOfWeek`)
-3. **Model decoding** — confirm `CodingKeys` mappings survive Firestore field name changes
-4. **BMError localized descriptions** — ensure user-facing strings are correct
-
-### Running Tests
+If a test target were added, the standard Xcode command-line invocation would be:
 
 ```bash
-# From command line (requires Xcode and simulator)
 xcodebuild test \
   -workspace berkeley-mobile.xcworkspace \
   -scheme berkeley-mobile \
   -destination 'platform=iOS Simulator,name=iPhone 16'
 ```
 
-Or use Cmd+U in Xcode.
+This command is not currently functional against this repository because no testable target is registered in the scheme.
 
-### Coverage Targets (aspirational)
+## SwiftUI Previews (Observed in Repository)
 
-| Layer | Target |
-|-------|--------|
-| ViewModel business logic | ≥ 80% |
-| Utility / extension methods | ≥ 90% |
-| Data model decoding | ≥ 70% |
-| UI Views | Not measured (SwiftUI previews serve as smoke tests) |
+`#Preview` blocks were found alongside SwiftUI views in the repository (e.g. `berkeley-mobile/Events/EventDataSource/BMEventCalendarEntry.swift` provides a `sampleEntry` static value apparently intended for preview/sample use). Previews are a Level 2 Xcode/SwiftUI platform capability for visual iteration during development; they do not constitute automated tests and are not a substitute for `XCTest` coverage.
 
-## SwiftUI Previews
+## Not Found in Codebase
 
-In lieu of automated UI tests, all SwiftUI views should have `#Preview` blocks that exercise common states (loading, empty, populated, error). This is the primary way UI correctness is verified today.
-
-```swift
-#Preview {
-    SafetyView()
-}
-
-#Preview("Empty state") {
-    GuidesView()
-        // inject a ViewModel with empty guides
-}
-```
+- Test file naming conventions: not found (no test files exist).
+- Mocking conventions: not found (no test code exists to establish a pattern).
+- Coverage targets or CI test gating: not found in codebase (no CI configuration files were found in the repository).

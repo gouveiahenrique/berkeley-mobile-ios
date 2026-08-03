@@ -1,106 +1,61 @@
 # Code Conventions
 
-**Last updated:** 2026-07-31
+**Last updated:** 2026-08-03
 
 ## Naming Conventions
 
 ### Variables and Properties
 
-- `camelCase` for all variables, properties, and function parameters
-- `@Published` and `@Observable` properties use the same `camelCase` rule
-- Boolean properties use `is`, `has`, `should`, or `can` prefixes: `isLoading`, `isFetching`, `isEmailValid`
+- `camelCase` observed for variables, properties, and function parameters throughout the codebase.
+- Boolean properties use `is`/`has` prefixes in observed code (e.g. `isLoading`, `isFetching` in ViewModels; `isEmailValid` in `FeedbackForm`).
 
 ### Functions and Methods
 
-- `camelCase` for functions: `fetchSafetyLogs()`, `updateFilterState()`, `associateCrimesWithColor()`
-- Async methods are named like their synchronous counterparts — the `async` keyword signals the calling convention
-- Factory/sample data methods are static on the type: `static func getSampleSafetyLog() -> BMSafetyLog`
+- `camelCase` for functions: `fetchSafetyLogs()`, `fetchItems(_:)`.
+- Async methods share the same name as their synchronous predecessors would have — the `async` keyword alone signals the calling convention (no `Async` suffix observed).
+- Sample/mock data factory methods are declared as `static` on the type, e.g. `BMEventCalendarEntry.sampleEntry` (`berkeley-mobile/Events/EventDataSource/BMEventCalendarEntry.swift:136`).
 
 ### Types (Classes, Structs, Enums, Protocols)
 
-- `PascalCase` for all type names
-- App-specific types are prefixed with `BM`: `BMSafetyLog`, `BMError`, `BMConstants`, `BMColor`, `BMFont`, `BMCalendarEvent`
-- SwiftUI views do not use the `BM` prefix: `SafetyView`, `DiningHallsView`, `GuidesView`
-- ViewModels are suffixed with `ViewModel`: `SafetyViewModel`, `DiningHallsViewModel`
-- Data services are suffixed with `DataService`: `EventsDataService`
-- Protocols are named by capability (not prefixed with `I`): `DataSource`, `CanFavorite`, `HasName`, `HasLocation`
+- `PascalCase` for all type names.
+- App-specific types are prefixed `BM`: `BMSafetyLog`, `BMError`, `BMConstants`, `BMEventCalendarEntry`, `BMNetworkingManager`.
+- SwiftUI view types do not carry the `BM` prefix: `SafetyView`, `TabBarController`'s hosted views (`TodayView`, `SafetyView`, `ResourcesView`).
+- ViewModels are suffixed `ViewModel`: `SafetyViewModel`, `DiningHallsViewModel`, `EventsViewModel`, `GuidesViewModel`.
+- Protocols are named by capability, not prefixed with `I`: `DataSource`, `CanFavorite`, `HasName`, `HasLocation`, `HasImage`, `HasOpenTimes`, `HasOpenClosedStatus`, `HasPhoneNumber`, `HasWebsite`, `BMCalendarEvent`, `SearchItem`, `MainDrawerViewDelegate`, `DrawerViewDelegate`.
 
 ### Constants
 
-- `fileprivate let kConstantName` — file-scoped Firestore endpoint constants (lowercase `k` prefix)
-- `static let constantName` — camelCase for type-level static constants in structs: `BMConstants.safetyLogsCollectionName`
-- Enum cases use `camelCase`: `.today`, `.thisWeek`, `.aggravatedAssault`
+- `fileprivate let k<Name>` — file-scoped constants, most commonly Firestore collection/endpoint names, e.g. `fileprivate let kMapEndpoint = "Map Marker"` (`MapDataSource.swift`), `fileprivate let kGymsEndpoint = "Gyms"` (`GymDataSource.swift`).
+- `static let <name>` on a struct for constants shared across files: `BMConstants.safetyLogsCollectionName`.
+- Enum cases use `camelCase`.
 
 ### Files
 
-- `PascalCase.swift` for all Swift files: `SafetyViewModel.swift`, `DiningHallsView.swift`
-- Extensions follow `TypeName+Category.swift`: `Colors+Text.swift`, `AppDelegate+Migration.swift`, `Date+Extension.swift`
-- Asset files use their natural names (Apercu font family, image sets)
+- `PascalCase.swift` for Swift files: `SafetyViewModel.swift`, `DiningHallsView.swift`.
+- Extension files follow `TypeName+Category.swift`: `Colors+Text.swift`, `AppDelegate+Migration.swift`, `Date+Extension.swift`, `CLLocation+Extension.swift`.
 
 ## Code Formatting
 
-No automated formatter is configured. Follow these conventions manually:
+No linter or formatter configuration file was found in the repository (no `.swiftlint.yml`, no `.swiftformat`). The following describes patterns observed by inspection, not enforced conventions:
 
-- **Indentation:** 4 spaces (Xcode default)
-- **Line length:** No hard limit enforced; keep lines readable at ~120 characters
-- **Braces:** Same-line opening brace (K&R style): `func foo() {`
-- **Trailing commas:** Not required in Swift; omit on last item
-- **Blank lines:** One blank line between methods; two blank lines before `// MARK:` sections
+- 4-space indentation is used throughout inspected files.
+- Opening braces are placed on the same line as the declaration (`func foo() {`).
+- `// MARK: -` comments are used to divide files into sections, e.g. `// MARK: - UNUserNotificationCenterDelegate` and `// MARK: - MessagingDelegate` in `AppDelegate.swift`.
 
-## MARK Comments
+## ViewModel Patterns (Two Coexisting Approaches)
 
-Use `// MARK: -` to organize large files into named sections. This is the primary navigation aid:
+### `@Observable` macro
 
-```swift
-// MARK: - SafetyViewManager
+Observed in, e.g., `berkeley-mobile/Home/Fitness/GymOccupancy/GymOccupancyViewModel.swift`, `berkeley-mobile/Home/Home Drawer/HomeDrawerPinViewModel.swift`, `berkeley-mobile/Home/Dining/DiningDataSource/DiningHallsViewModel.swift`, `berkeley-mobile/Home/Search/SearchViewModel.swift`, `berkeley-mobile/Home/Guides/GuidesViewModel.swift`. The `@Observable` macro requires iOS 17+ (Level 2 platform capability); the app target's effective deployment target is iOS 18.0 (see `docs/tech.md`), so this constraint does not block its use in the main app target.
 
-final class SafetyViewModel: NSObject, ObservableObject { ... }
+### `ObservableObject` / `@Published`
 
-// MARK: - Sample Data
-
-extension SafetyViewModel { ... }
-```
-
-Use `// MARK: -` (with dash) for section separators. Use `// MARK:` (without dash) for sub-sections within a class body:
-
-```swift
-// MARK: - UNUserNotificationCenterDelegate
-// MARK: - MessagingDelegate
-```
-
-## ViewModel Pattern
-
-### `@Observable` (preferred for iOS 17+ features)
-
-```swift
-@MainActor
-@Observable
-class DiningHallsViewModel {
-    var diningHalls: [BMDiningHall] = []
-    var isFetching = false
-
-    init() {
-        isFetching = true
-        Task { @MainActor in
-            diningHalls = await fetchDiningHalls()
-            isFetching = false
-        }
-    }
-}
-```
-
-### `ObservableObject` (for iOS 13+ compatibility)
+Observed in, e.g., `berkeley-mobile/Safety/SafetyViewModel.swift`, `berkeley-mobile/Home/HomeViewModel.swift`, `berkeley-mobile/Resources/ResourcesViewModel.swift`, `berkeley-mobile/Events/CalendarView.swift`. Example from `BMNetworkingManager`/`SafetyViewModel`-style code:
 
 ```swift
 final class SafetyViewModel: NSObject, ObservableObject {
     @Published var safetyLogs = [BMSafetyLog]()
     @Published var isLoading = false
-
-    override init() {
-        super.init()
-        isLoading = true
-        Task { await listenForSafetyLogs() }
-    }
 
     @MainActor
     private func listenForSafetyLogs() async {
@@ -114,67 +69,36 @@ final class SafetyViewModel: NSObject, ObservableObject {
 }
 ```
 
-**Rules:**
-- Mark `init` tasks as `@MainActor` or dispatch back to main for UI state updates
-- Use `defer { isLoading = false }` to guarantee loading state resets even on error
-- Error state is surfaced via a `BMAlert` property, never via `fatalError` or `assertionFailure` in production code
+Both patterns coexist in the current codebase; no migration marker or deprecation comment favoring one over the other was found.
 
-## Dependency Injection Pattern
+## Dependency Injection Pattern (`FactoryKit`)
 
-Inject ViewModels in SwiftUI views using `@InjectedObservable` (for `@Observable` classes) or `@Injected` (for services):
+ViewModels and services are registered in `berkeley-mobile/BerkeleyMobile+Injection.swift` as a `Container` extension:
 
 ```swift
-// SwiftUI view — @Observable ViewModel
-struct GuidesView: View {
-    @InjectedObservable(\.guidesViewModel) private var viewModel
-}
-
-// UIKit or presenter — service injection
-class TabBarController: UITabBarController {
-    @Injected(\.feedbackFormPresenter) private var feedbackFormPresenter
-}
-```
-
-Register all dependencies in `BerkeleyMobile+Injection.swift` as `Container` extensions. Never instantiate ViewModels directly inside views.
-
-## Async/Await Patterns
-
-- Use `async throws` for all Firestore fetch methods
-- Fire-and-forget tasks from `init()` use `Task { ... }` — mark the closure `@MainActor` when updating UI state
-- Use `withTaskGroup` for concurrent independent operations (e.g., checking calendar existence for multiple events)
-- Avoid callbacks (`completionHandler`) in new code — only legacy `DataSource` subclasses use them
-
-```swift
-// Concurrent independent async work
-let results: [(BMEventCalendarEntry, Bool)] = await withTaskGroup(of: (BMEventCalendarEntry, Bool).self) { group in
-    for event in events {
-        group.addTask {
-            let exists = await self.doesEventExists(for: event)
-            return (event, exists)
-        }
+extension Container {
+    var diningHallsViewModel: Factory<DiningHallsViewModel> {
+        self { DiningHallsViewModel() }.singleton
     }
-    return await group.reduce(into: []) { $0.append($1) }
+
+    var eventsViewModel: Factory<EventsViewModel> {
+        self { @MainActor in EventsViewModel() }.shared
+    }
 }
 ```
+
+Injection sites use `@Injected(\.key)` (confirmed in `TabBarController.swift`: `@Injected(\.feedbackFormPresenter) private var feedbackFormPresenter`). 25 files in the repository reference `@InjectedObservable` or `@Injected(`. Scopes observed on `Factory<T>` registrations: `.singleton`, `.shared`, and default (unscoped, new instance per resolve).
 
 ## Error Handling
 
-- App-domain errors go in `BMError` (an enum conforming to `LocalizedError`)
-- Firestore errors are caught at the ViewModel level with user-visible alerts
-- Log errors with `os.Logger` at the appropriate severity — never print to stdout in production code:
-
-```swift
-// Logger categories are declared in Logger+Ext.swift
-Logger.diningHallsViewModel.error("\(error)")
-Logger.eventsDataService.error("Cannot decode BerkeleyEventsDaySnapshot: \(error.localizedDescription)")
-```
-
-- Use `compactMap { try? ... }` when individual document decode failures should be silently skipped
-- Use `do { try ... } catch { Logger.category.error(...) }` when failures should be logged but not fatal
+- App-domain errors specific to non-Firestore operations (calendar integration) are declared in `berkeley-mobile/Data/BMError.swift` as a `LocalizedError` enum.
+- Firestore/network errors are caught at the ViewModel layer and surfaced to the UI via an observable property (e.g. `alert: BMAlert?` on `SafetyViewModel`).
+- `compactMap { try? ... }` is used where individual document decode failures should be silently skipped (`BMNetworkingManager.fetchSafetyLogs`).
+- Legacy `DataSource` subclasses (`MapDataSource`, `GymDataSource`, `LibraryDataSource`, `GymClassDataSource`) log fetch errors via `print(...)`, not `os.Logger`.
 
 ## Logging
 
-All loggers are pre-declared in `Utils/Logger+Ext.swift` using `os.Logger`:
+Loggers for newer code are pre-declared in `berkeley-mobile/Utils/Logger+Ext.swift` using `os.Logger`:
 
 ```swift
 extension Logger {
@@ -185,52 +109,37 @@ extension Logger {
 }
 ```
 
-- Add a new static property to `Logger+Ext.swift` for each new ViewModel or service — never create inline `Logger` instances
-- Use `.error` for decode/network failures, `.info` for informational events (not currently used), `.debug` for development-only traces
-- No `print()` statements in committed code
+Confirmed call sites using this pattern include `Logger.homeDrawerPinViewModel.error(...)` (`HomeDrawerPinViewModel.swift`), `Logger.diningHallsViewModel.error(...)` (`DiningHallsViewModel.swift`), `Logger.guidesViewModel.error(...)` (`GuidesViewModel.swift`), `Logger.weatherDataViewModel.error(...)` (`WeatherDataViewModel.swift`), `Logger.newsDataViewModel.error(...)` (`NewsDataViewModel.swift`).
+
+This `os.Logger` pattern coexists with `print(...)` calls in legacy `DataSource` files — both exist in the current codebase; `print(...)` is confined to the older `DataSource` implementations in the files inspected.
 
 ## Design System Usage
 
-### Colors
-
-Use `BMColor` static properties — never use raw `UIColor(red:green:blue:alpha:)` inline in views:
-
-```swift
-tabBar.tintColor = BMColor.blackText
-appearance.backgroundColor = BMColor.cardBackground
-```
-
-### Fonts
-
-Use `BMFont` helpers — never use `UIFont.systemFont` or string literals for font names:
-
-```swift
-.font(Font(BMFont.bold(20)))
-.font(Font(BMFont.regular(11)))
-```
+- `BMColor` static properties are used in observed code instead of raw `UIColor(red:green:blue:alpha:)` literals, e.g. `tabBar.tintColor = BMColor.blackText` in `TabBarController.swift`.
+- Color and font extensions are organized by feature under `berkeley-mobile/Assets/Colors/` (`Colors+Text.swift`, `Colors+Calendar.swift`, `Colors+GymClass.swift`, `Colors+ActionButton.swift`, `Colors+MapMarker.swift`, `Colors+Event.swift`, `Colors+StudyPact.swift`, `Colors+TagView.swift`, `Colors+Resource.swift`) and `berkeley-mobile/Assets/Fonts.swift`.
 
 ## Property Wrappers
 
-Use `@Display` for any string property that will be shown in the UI and may contain leading/trailing whitespace or invalid characters:
+`@Display` (`berkeley-mobile/Data/PropertyWrappers/Display.swift`) wraps `String`/`String?` properties to trim whitespace/newlines and strip a specific invalid replacement character (`�`) on every set:
 
 ```swift
-struct DiningItem {
-    @Display var name: String
-    @Display var description: String?
+@propertyWrapper struct Display<T> {
+    private var _display: T
+    var wrappedValue: T {
+        get { return _display }
+        set { _display = Display.wrap(newValue) }
+    }
+    private static func wrap(_ rawString: String) -> String {
+        return rawString
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .replacingOccurrences(of: "�", with: "")
+    }
 }
 ```
 
-## SwiftUI View Composition
+Used on model properties intended for display, e.g. `@Display var name: String` and `@Display var descriptionText: String?` in `BMEventCalendarEntry`.
 
-- Break large `body` implementations into `private var` computed properties or `@ViewBuilder` private functions
-- Name sub-views descriptively: `private var appInfoSection: some View { ... }`
-- Use `#Preview` macros for all new SwiftUI views — include at least one populated and one empty/loading state
+## Async/Await Patterns
 
-## Anti-Patterns to Avoid
-
-- Never hardcode Firestore collection names — use `BMConstants.*` or `fileprivate let k*` constants
-- Never instantiate ViewModels directly in views — use `@InjectedObservable` / `@Injected`
-- Never use `print()` for logging — use `os.Logger` with a category declared in `Logger+Ext.swift`
-- Never make Firestore calls directly from SwiftUI views — delegate to a ViewModel
-- Never use `DispatchQueue.main.async` in new async/await code — use `@MainActor` instead
-- Never expose mutable arrays directly from a ViewModel without going through a sorted/filtered computed property
+- `async throws` is used for Firestore fetch methods in `BMNetworkingManager`.
+- `Task { ... }` fire-and-forget blocks are used from `init()` in `@Observable` ViewModels, with `@MainActor` applied where UI state is updated directly.
