@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ASDLC-499 — Event Detail All Day Indicator</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Toggle bar above the phone -->
+  <div class="prototype-controls">
+    <span class="prototype-label">Event type:</span>
+    <button class="toggle-btn active" id="btn-allday" onclick="setMode('allday')">All Day Event</button>
+    <button class="toggle-btn" id="btn-timed" onclick="setMode('timed')">Timed Event</button>
+  </div>
+
+  <div class="iphone-frame">
+    <div class="dynamic-island"></div>
+    <div class="screen-area">
+
+      <!-- Status Bar -->
+      <div class="status-bar">
+        <span class="status-time">9:41</span>
+        <div class="status-icons">
+          <!-- Signal bars -->
+          <svg width="17" height="12" viewBox="0 0 17 12" fill="none">
+            <rect x="0" y="8" width="3" height="4" rx="0.8" fill="white"/>
+            <rect x="4.5" y="5.5" width="3" height="6.5" rx="0.8" fill="white"/>
+            <rect x="9" y="3" width="3" height="9" rx="0.8" fill="white"/>
+            <rect x="13.5" y="0" width="3" height="12" rx="0.8" fill="white" opacity="0.35"/>
+          </svg>
+          <!-- WiFi -->
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+            <path d="M8 9.5C8.83 9.5 9.5 10.17 9.5 11S8.83 12.5 8 12.5 6.5 11.83 6.5 11 7.17 9.5 8 9.5Z" fill="white"/>
+            <path d="M8 6C9.66 6 11.17 6.67 12.28 7.72L13.7 6.3C12.23 4.88 10.22 4 8 4S3.77 4.88 2.3 6.3L3.72 7.72C4.83 6.67 6.34 6 8 6Z" fill="white"/>
+            <path d="M8 2.5C10.76 2.5 13.25 3.6 15.07 5.43L16.5 4C14.32 1.84 11.32 0.5 8 0.5S1.68 1.84-.5 4L.93 5.43C2.75 3.6 5.24 2.5 8 2.5Z" fill="white" opacity="0.5"/>
+          </svg>
+          <!-- Battery -->
+          <svg width="25" height="12" viewBox="0 0 25 12" fill="none">
+            <rect x="0.5" y="0.5" width="21" height="11" rx="2.5" stroke="white" stroke-opacity="0.35"/>
+            <rect x="1.5" y="1.5" width="18" height="9" rx="1.5" fill="white"/>
+            <path d="M23 4V8C23.83 7.67 24.5 6.93 24.5 6C24.5 5.07 23.83 4.33 23 4Z" fill="white" opacity="0.4"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Navigation Bar -->
+      <div class="nav-bar">
+        <button class="nav-back" onclick="/* no-op */">
+          <svg width="10" height="16" viewBox="0 0 10 16" fill="none">
+            <path d="M8.5 1.5L1.5 8L8.5 14.5" stroke="var(--app-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="nav-back-label">Events</span>
+        </button>
+        <div class="nav-title">Event Detail</div>
+        <button class="nav-action">
+          <!-- calendar.badge.plus icon -->
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <rect x="1" y="3" width="20" height="18" rx="3" stroke="var(--app-accent)" stroke-width="1.5"/>
+            <path d="M1 8H21" stroke="var(--app-accent)" stroke-width="1.5"/>
+            <path d="M6 1V5M16 1V5" stroke="var(--app-accent)" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="16" cy="16" r="5" fill="var(--app-accent)"/>
+            <path d="M16 13.5V18.5M13.5 16H18.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Scrollable content -->
+      <div class="scroll-content">
+
+        <!-- Hero Card -->
+        <div class="hero-card shadowfy">
+          <!-- Background image (CSS gradient stand-in) -->
+          <div class="hero-bg-image"></div>
+
+          <!-- Overlay card -->
+          <div class="hero-overlay">
+            <!-- Thumbnail -->
+            <div class="event-thumbnail">
+              <div class="thumb-placeholder">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                  <rect width="40" height="40" rx="8" fill="var(--app-accent)" opacity="0.2"/>
+                  <path d="M10 28L16 20L21 25L26 18L30 28H10Z" fill="var(--app-accent)"/>
+                  <circle cx="14" cy="16" r="3" fill="var(--app-accent)"/>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Event name -->
+            <div class="event-name">Berkeley Data Science Research Symposium</div>
+
+            <!-- Meta rows -->
+            <div class="event-meta">
+              <!-- Date row -->
+              <div class="meta-row">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <rect x="0.5" y="1.5" width="13" height="12" rx="2" stroke="var(--color-muted)" stroke-width="1.2"/>
+                  <path d="M0.5 5.5H13.5" stroke="var(--color-muted)" stroke-width="1.2"/>
+                  <path d="M4 0.5V2.5M10 0.5V2.5" stroke="var(--color-muted)" stroke-width="1.2" stroke-linecap="round"/>
+                </svg>
+                <span class="meta-text">Monday, August 3, 2026</span>
+              </div>
+
+              <!-- Time row — changes based on event type -->
+              <div class="meta-row" id="time-row">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <circle cx="7" cy="7" r="6" stroke="var(--color-muted)" stroke-width="1.2"/>
+                  <path d="M7 3.5V7L9.5 9" stroke="var(--color-muted)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <!-- CURRENT (buggy) state: shows 12:00 AM for all-day events -->
+                <span class="meta-text" id="time-text-wrong" style="display:none;">12:00 AM</span>
+                <!-- EXPECTED (fixed) state: shows All Day capsule -->
+                <span class="allday-capsule" id="allday-capsule">All Day</span>
+                <!-- Timed event text -->
+                <span class="meta-text" id="time-text-timed" style="display:none;">10:00 AM – 4:00 PM</span>
+              </div>
+
+              <!-- Location row -->
+              <div class="meta-row">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M7 0.5C4.52 0.5 2.5 2.52 2.5 5C2.5 8.5 7 13.5 7 13.5S11.5 8.5 11.5 5C11.5 2.52 9.48 0.5 7 0.5Z" stroke="var(--color-muted)" stroke-width="1.2"/>
+                  <circle cx="7" cy="5" r="1.5" stroke="var(--color-muted)" stroke-width="1.2"/>
+                </svg>
+                <span class="meta-text">Doe Memorial Library, Room 190</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Description card -->
+        <div class="description-card shadowfy">
+          <div class="description-title">Description</div>
+          <div class="description-body">
+            Join us for a full-day celebration of undergraduate and graduate data science research at UC Berkeley. Students will present their projects, interact with faculty mentors, and engage in panel discussions covering machine learning, public policy analytics, and climate data modeling.
+          </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="action-buttons">
+          <button class="bm-action-btn">Learn More</button>
+          <button class="bm-action-btn">Register</button>
+        </div>
+
+        <!-- Before/After label -->
+        <div class="state-label" id="state-label">
+          <div class="state-badge new">Expected (Fixed)</div>
+          <div class="state-desc">The time row displays an "All Day" capsule instead of 12:00 AM</div>
+        </div>
+
+      </div><!-- /scroll-content -->
+
+      <!-- Home indicator -->
+      <div class="home-indicator"></div>
+    </div><!-- /screen-area -->
+  </div><!-- /iphone-frame -->
+
+  <script src="app.js"></script>
+</body>
+</html>
