@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Berkeley Mobile — Event Detail (ASDLC-498)</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="iphone-frame">
+    <!-- Dynamic Island -->
+    <div class="dynamic-island"></div>
+
+    <!-- Screen: Event Detail -->
+    <div id="screen-event-detail" class="screen active">
+
+      <!-- Status Bar -->
+      <div class="status-bar">
+        <span class="status-time">9:41</span>
+        <div class="status-icons">
+          <!-- Signal -->
+          <svg width="17" height="12" viewBox="0 0 17 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0" y="7" width="3" height="5" rx="0.8" fill="currentColor" style="color:var(--color-label);opacity:1"/>
+            <rect x="4.5" y="5" width="3" height="7" rx="0.8" fill="currentColor" style="color:var(--color-label);opacity:1"/>
+            <rect x="9" y="2.5" width="3" height="9.5" rx="0.8" fill="currentColor" style="color:var(--color-label);opacity:1"/>
+            <rect x="13.5" y="0" width="3" height="12" rx="0.8" fill="currentColor" style="color:var(--color-label);opacity:1"/>
+          </svg>
+          <!-- WiFi -->
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 9.5C8.69 9.5 9.25 10.06 9.25 10.75S8.69 12 8 12s-1.25-.56-1.25-1.25S7.31 9.5 8 9.5z" fill="currentColor" style="color:var(--color-label)"/>
+            <path d="M8 6.75c1.1 0 2.1.45 2.83 1.17l.89-.89A5.23 5.23 0 008 5.5a5.23 5.23 0 00-3.72 1.53l.89.89A3.73 3.73 0 018 6.75z" fill="currentColor" style="color:var(--color-label)"/>
+            <path d="M8 3.5c2.07 0 3.94.84 5.3 2.2l.88-.88A7.73 7.73 0 008 2.25 7.73 7.73 0 002.82 4.82l.88.88A6.23 6.23 0 018 3.5z" fill="currentColor" style="color:var(--color-label)"/>
+            <path d="M8 .25C10.89.25 13.5 1.4 15.42 3.28l.88-.87A9.73 9.73 0 008 0a9.73 9.73 0 00-8.3 2.41l.88.87A8.23 8.23 0 018 .25z" fill="currentColor" style="color:var(--color-label);opacity:0.35"/>
+          </svg>
+          <!-- Battery -->
+          <svg width="25" height="12" viewBox="0 0 25 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="currentColor" style="color:var(--color-label)" stroke-opacity="0.35"/>
+            <rect x="2" y="2" width="16" height="8" rx="2" fill="currentColor" style="color:var(--color-label)"/>
+            <path d="M23 4v4a2 2 0 000-4z" fill="currentColor" style="color:var(--color-label);opacity:0.4"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Nav Bar -->
+      <div class="nav-bar">
+        <button class="nav-back-btn" onclick="void(0)">
+          <svg width="10" height="17" viewBox="0 0 10 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8.5 1.5L1.5 8.5L8.5 15.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Events</span>
+        </button>
+        <span class="nav-title"></span>
+        <!-- Calendar add icon -->
+        <button class="nav-action-btn" title="Add to Calendar">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="4" width="18" height="16" rx="3" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M7 2v4M15 2v4M2 9h18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M11 13v4M9 15h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Scrollable body -->
+      <div class="scroll-content">
+
+        <!-- ── Demo Toggle ── -->
+        <div class="demo-toggle-bar">
+          <div class="demo-toggle-label">
+            All Day Event
+            <small>Toggle to see before / after behaviour</small>
+          </div>
+          <label class="ios-switch">
+            <input type="checkbox" id="allDayToggle" onchange="app.setAllDay(this.checked)">
+            <div class="ios-switch-track"></div>
+            <div class="ios-switch-thumb"></div>
+          </label>
+        </div>
+
+        <!-- ── Event Header Card (BMDetailHeaderView) ── -->
+        <div class="event-header-card">
+          <!-- Background image area -->
+          <div class="event-bg-gradient">
+            <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="8" y="10" width="48" height="44" rx="6" stroke="white" stroke-width="3"/>
+              <path d="M8 22h48" stroke="white" stroke-width="3"/>
+              <path d="M22 6v10M42 6v10" stroke="white" stroke-width="3" stroke-linecap="round"/>
+              <rect x="16" y="30" width="10" height="8" rx="2" fill="white" opacity="0.6"/>
+              <rect x="30" y="30" width="10" height="8" rx="2" fill="white" opacity="0.6"/>
+            </svg>
+          </div>
+
+          <!-- Material overlay -->
+          <div class="event-material-overlay">
+            <!-- Thumbnail -->
+            <div class="event-thumb-wrap">
+              <div class="event-thumb">
+                <div class="event-thumb-inner">
+                  <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="4" y="6" width="28" height="26" rx="4" stroke="white" stroke-width="2.5"/>
+                    <path d="M4 13h28" stroke="white" stroke-width="2.5"/>
+                    <path d="M12 3v6M24 3v6" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+                    <rect x="9" y="18" width="6" height="5" rx="1.5" fill="white" opacity="0.7"/>
+                    <rect x="18" y="18" width="6" height="5" rx="1.5" fill="white" opacity="0.7"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Event Name -->
+            <div class="event-name">Exhibit | A Storied Campus: Cal in Fiction</div>
+
+            <!-- Meta rows -->
+            <div class="event-meta-rows">
+
+              <!-- Date row (always visible) -->
+              <div class="event-detail-row">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="1.5" y="2.5" width="13" height="12" rx="2" stroke="currentColor" stroke-width="1.3"/>
+                  <path d="M1.5 6h13" stroke="currentColor" stroke-width="1.3"/>
+                  <path d="M5 1v3M11 1v3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+                </svg>
+                <span class="event-detail-row-text">Thu, Aug 3</span>
+              </div>
+
+              <!-- Time row — swaps between bug (time) and fix (all day pill) -->
+              <div class="event-detail-row" id="time-row">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/>
+                  <path d="M8 4.5V8l2.5 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+
+                <!-- BEFORE: shows misleading "12:00 AM" -->
+                <span class="event-detail-row-text" id="time-before">12:00 AM</span>
+
+                <!-- AFTER: shows "All Day" capsule -->
+                <div class="all-day-pill" id="time-after" style="display:none;">
+                  <span class="all-day-pill-label">All Day</span>
+                </div>
+              </div>
+
+              <!-- Location row -->
+              <div class="event-detail-row">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M8 1.5C5.52 1.5 3.5 3.52 3.5 6c0 3.5 4.5 8.5 4.5 8.5s4.5-5 4.5-8.5c0-2.48-2.02-4.5-4.5-4.5z" stroke="currentColor" stroke-width="1.3"/>
+                  <circle cx="8" cy="6" r="1.5" stroke="currentColor" stroke-width="1.2"/>
+                </svg>
+                <span class="event-detail-row-text">The Rowell Exhibition Cases, Doe Library, 2nd floor</span>
+              </div>
+
+            </div><!-- /event-meta-rows -->
+          </div><!-- /material-overlay -->
+        </div><!-- /event-header-card -->
+
+        <!-- ── Before / After Comparison ── -->
+        <div class="comparison-section">
+          <div class="comparison-header">Time Row Behaviour Comparison</div>
+
+          <div class="comparison-row">
+            <span class="comparison-row-label" style="font-size:11px;font-weight:600;color:#FF3B30;">BEFORE</span>
+            <div class="comparison-row-content">
+              <div class="event-detail-row">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="color:var(--color-muted)">
+                  <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/>
+                  <path d="M8 4.5V8l2.5 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="time-text-bad">12:00 AM</span>
+                <span class="state-badge before">Misleading</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="comparison-row">
+            <span class="comparison-row-label" style="font-size:11px;font-weight:600;color:#34C759;">AFTER</span>
+            <div class="comparison-row-content">
+              <div class="event-detail-row">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="color:var(--color-muted)">
+                  <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/>
+                  <path d="M8 4.5V8l2.5 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <div class="all-day-pill">
+                  <span class="all-day-pill-label">All Day</span>
+                </div>
+                <span class="state-badge after">Fixed</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Description Card ── -->
+        <div class="description-card">
+          <div class="description-title">Description</div>
+          <div class="description-body">
+            Mention of the name University of California, Berkeley, evokes a range of images: a celebrated institution, a seat of innovation, protests and activism, iconic architecture, colorful traditions, and … literary muse? The campus has long sparked the creativity of fiction writers, inspiring them to use it as a backdrop, a key player, or a barely disguised character within their tales.
+          </div>
+        </div>
+
+        <!-- ── Action Buttons ── -->
+        <div class="action-buttons">
+          <button class="bm-action-btn">Learn More</button>
+          <button class="bm-action-btn" style="background:rgba(88,112,185,0.15);color:var(--app-accent);">Register</button>
+        </div>
+
+      </div><!-- /scroll-content -->
+
+      <div class="home-indicator"></div>
+    </div><!-- /screen-event-detail -->
+
+  </div><!-- /iphone-frame -->
+
+  <script src="app.js"></script>
+</body>
+</html>
