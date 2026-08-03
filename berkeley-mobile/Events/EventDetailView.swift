@@ -150,10 +150,26 @@ struct BMDetailHeaderView: View {
         }
     }
     
+    private static let allDayString = "All Day"
+
     @ViewBuilder
     private var timeView: some View {
         if let timePart = event.dateString.components(separatedBy: " / ").last {
-             EventDetailRow(systemImageName: "clock", text: timePart)
+            if timePart == BMDetailHeaderView.allDayString {
+                Capsule()
+                    .fill(.gray.opacity(0.5))
+                    .frame(height: 24)
+                    .overlay(
+                        Text(BMDetailHeaderView.allDayString)
+                            .font(Font(BMFont.bold(12)))
+                            .foregroundStyle(.primary)
+                            .padding(.horizontal, 8)
+                    )
+                    .fixedSize(horizontal: true, vertical: false)
+                    .accessibilityLabel("All Day event")
+            } else {
+                EventDetailRow(systemImageName: "clock", text: timePart)
+            }
         }
     }
 
@@ -210,5 +226,8 @@ struct BMDetailDescriptionView: View {
 }
 
 #Preview {
-    EventDetailView(event: BMEventCalendarEntry.sampleEntry)
+    Group {
+        EventDetailView(event: BMEventCalendarEntry.sampleEntry)
+        EventDetailView(event: BMEventCalendarEntry.sampleAllDayEntry)
+    }
 }
