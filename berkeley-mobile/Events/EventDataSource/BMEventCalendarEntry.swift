@@ -144,4 +144,18 @@ extension BMEventCalendarEntry {
         sourceLink: "https://berkeley.edu/event",
         type: "Default"
     )
+
+    static let sampleAllDayEntry = BMEventCalendarEntry(
+        name: "Academic Holiday",
+        date: Calendar.current.startOfDay(for: Date()),
+        end: {
+            var comps = Calendar.current.dateComponents([.year, .month, .day], from: Date())
+            comps.hour = 23; comps.minute = 59; comps.second = 59
+            return Calendar.current.date(from: comps) ?? Date()
+        }(),
+        descriptionText: "Campus closed for academic holiday.",
+        location: nil,
+        type: "Holiday",
+        isAllDay: true
+    )
 }
