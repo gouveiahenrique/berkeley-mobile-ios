@@ -152,8 +152,14 @@ struct BMDetailHeaderView: View {
     
     @ViewBuilder
     private var timeView: some View {
-        if let timePart = event.dateString.components(separatedBy: " / ").last {
-             EventDetailRow(systemImageName: "clock", text: timePart)
+        if event.isAllDay == true {
+            HStack {
+                Image(systemName: "clock")
+                    .font(.system(size: 16))
+                AllDayCapsule()
+            }
+        } else if let timePart = event.dateString.components(separatedBy: " / ").last {
+            EventDetailRow(systemImageName: "clock", text: timePart)
         }
     }
 
@@ -185,6 +191,21 @@ struct EventDetailRow: View {
             Text(text)
                 .font(Font(BMFont.regular(12)))
         }
+    }
+}
+
+
+// MARK: - AllDayCapsule
+
+struct AllDayCapsule: View {
+    var body: some View {
+        Text("All Day")
+            .font(Font(BMFont.regular(11)))
+            .padding(.horizontal, 8)
+            .padding(.vertical, 3)
+            .background(Color.accentColor.opacity(0.15))
+            .foregroundColor(.accentColor)
+            .clipShape(Capsule())
     }
 }
 
