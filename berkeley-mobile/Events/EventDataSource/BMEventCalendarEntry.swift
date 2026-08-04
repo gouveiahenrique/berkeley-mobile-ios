@@ -142,6 +142,7 @@ extension BMEventCalendarEntry {
         registerLink: "https://berkeley.edu/register",
         imageURL: "https://events.berkeley.edu/live/image/gid/139/width/200/height/200/crop/1/src_region/0,0,3200,2420/4595_cubanc00006587_ae_a.rev.1698182194.jpg",
         sourceLink: "https://berkeley.edu/event",
-        type: "Default"
+        type: "Default",
+        isAllDay: true
     )
 }
