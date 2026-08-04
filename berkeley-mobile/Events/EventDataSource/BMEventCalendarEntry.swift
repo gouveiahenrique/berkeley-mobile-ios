@@ -60,6 +60,13 @@ class BMEventCalendarEntry: NSObject, NSCoding, Identifiable, BMCalendarEvent, H
     /// Is this event "All Day"?
     var isAllDay: Bool?
 
+    /// Whether this event should be treated as an "All Day" event.
+    /// This is the single, authoritative check for all-day status — based on the explicit
+    /// `isAllDay` flag from the backend, not inferred from `startDate`/`end` time components.
+    var isAllDayEvent: Bool {
+        isAllDay == true
+    }
+
     /// The color associated with this event's `type`.
     var color: UIColor {
         guard let type = type else { return BMColor.eventDefault }
@@ -143,5 +150,16 @@ extension BMEventCalendarEntry {
         imageURL: "https://events.berkeley.edu/live/image/gid/139/width/200/height/200/crop/1/src_region/0,0,3200,2420/4595_cubanc00006587_ae_a.rev.1698182194.jpg",
         sourceLink: "https://berkeley.edu/event",
         type: "Default"
+    )
+
+    static let sampleAllDayEntry = BMEventCalendarEntry(
+        name: "Cal Day",
+        date: Date().getStartOfDay(),
+        end: Date.getTodayShiftDate(for: Date(), hourComponent: 23, minuteComponent: 59, secondComponent: 59),
+        descriptionText: "An annual open house for the entire Berkeley community.",
+        location: "UC Berkeley Campus",
+        imageURL: "https://events.berkeley.edu/live/image/gid/139/width/200/height/200/crop/1/src_region/0,0,3200,2420/4595_cubanc00006587_ae_a.rev.1698182194.jpg",
+        type: "Default",
+        isAllDay: true
     )
 }

@@ -149,10 +149,14 @@ struct BMDetailHeaderView: View {
              EventDetailRow(systemImageName: "calendar", text: dateString)
         }
     }
-    
+
     @ViewBuilder
     private var timeView: some View {
-        if let timePart = event.dateString.components(separatedBy: " / ").last {
+        if event.isAllDayEvent {
+            EventDetailRow(systemImageName: "clock") {
+                AllDayCapsuleView()
+            }
+        } else if let timePart = event.dateString.components(separatedBy: " / ").last {
              EventDetailRow(systemImageName: "clock", text: timePart)
         }
     }
@@ -174,17 +178,43 @@ struct BMDetailHeaderView: View {
 
 // MARK: - EventDetailRow
 
-struct EventDetailRow: View {
+struct EventDetailRow<Content: View>: View {
     let systemImageName: String
-    let text: String
+    let content: Content
+
+    init(systemImageName: String, text: String) where Content == Text {
+        self.systemImageName = systemImageName
+        self.content = Text(text)
+            .font(Font(BMFont.regular(12)))
+    }
+
+    init(systemImageName: String, @ViewBuilder content: () -> Content) {
+        self.systemImageName = systemImageName
+        self.content = content()
+    }
 
     var body: some View {
         HStack {
             Image(systemName: systemImageName)
                 .font(.system(size: 16))
-            Text(text)
-                .font(Font(BMFont.regular(12)))
+            content
         }
+    }
+}
+
+
+// MARK: - AllDayCapsuleView
+
+struct AllDayCapsuleView: View {
+    var body: some View {
+        Text("All Day")
+            .font(Font(BMFont.bold(11)))
+            .foregroundStyle(Color(BMColor.Calendar.dayOfWeekHeader))
+            .padding(.horizontal, 10)
+            .padding(.vertical, 3)
+            .background(Color(BMColor.Calendar.dayOfWeekHeader).opacity(0.18))
+            .clipShape(Capsule())
+            .accessibilityLabel("All Day")
     }
 }
 
@@ -209,6 +239,10 @@ struct BMDetailDescriptionView: View {
     }
 }
 
-#Preview {
+#Preview("Timed Event") {
     EventDetailView(event: BMEventCalendarEntry.sampleEntry)
+}
+
+#Preview("All Day Event") {
+    EventDetailView(event: BMEventCalendarEntry.sampleAllDayEntry)
 }
