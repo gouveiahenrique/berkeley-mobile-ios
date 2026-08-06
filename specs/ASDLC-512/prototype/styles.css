@@ -1,0 +1,409 @@
+/* ─── Design Tokens (extracted from BMColor, BMFont via CodeGraph) ─── */
+:root {
+  --app-accent:        #FB9B8E;   /* BMColor.selectedButtonBackground */
+  --app-accent-blue:   #7B9AFC;   /* BMColor.barGraphEntryCurrent */
+  --color-bg:          #FAFAFA;   /* BMColor.modalBackground light */
+  --color-surface:     #FFFFFF;   /* BMColor.cardBackground light */
+  --color-label:       #000000;
+  --color-muted:       rgba(60,60,67,0.6);
+  --color-border:      rgba(60,60,67,0.29);
+  --color-error:       #FF3B30;
+  --color-success:     #34C759;
+  --radius-base:       12px;      /* CardView.layer.cornerRadius */
+  --spacing-unit:      16px;
+  --font-family:       'Apercu', -apple-system, 'SF Pro Text', system-ui, sans-serif;
+
+  /* iOS system colours */
+  --ios-blue:          #007AFF;
+  --ios-green:         #34C759;
+  --ios-red:           #FF3B30;
+  --ios-orange:        #FF9500;
+  --ios-separator:     rgba(60,60,67,0.29);
+  --ios-fill:          rgba(120,120,128,0.20);
+  --ios-label:         var(--color-label);
+  --ios-label-secondary: var(--color-muted);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg:      #414141;     /* BMColor.modalBackground dark */
+    --color-surface: #484747;     /* BMColor.cardBackground dark */
+    --color-label:   #FFFFFF;
+    --color-muted:   rgba(235,235,245,0.60);
+    --color-border:  rgba(84,84,88,0.65);
+  }
+}
+
+/* ─── Reset ─── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #1a1a2e;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-family: var(--font-family);
+  gap: 20px;
+}
+
+/* ─── Scene toggle ─── */
+.scene-toggle {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.scene-btn {
+  padding: 8px 18px;
+  border-radius: 20px;
+  border: 1.5px solid rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.7);
+  font-family: var(--font-family);
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.scene-btn.active {
+  background: var(--app-accent);
+  border-color: var(--app-accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+/* ─── iPhone 15 Pro frame ─── */
+.iphone-frame {
+  width: 393px;
+  height: 852px;
+  background: #000;
+  border-radius: 55px;
+  box-shadow:
+    0 0 0 2px #3a3a3c,
+    0 0 0 6px #1c1c1e,
+    0 40px 80px rgba(0,0,0,0.6);
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.dynamic-island {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 34px;
+  background: #000;
+  border-radius: 20px;
+  z-index: 100;
+}
+
+.screen-area {
+  position: absolute;
+  inset: 0;
+  border-radius: 55px;
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+/* ─── Screens ─── */
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(100%);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  background: var(--color-bg);
+}
+.screen.active {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateX(0);
+}
+.screen.exiting {
+  opacity: 0;
+  transform: translateX(100%);
+}
+
+/* ─── Status bar ─── */
+.status-bar {
+  height: 54px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 28px 10px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+}
+.status-time {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-label);
+  letter-spacing: 0.1px;
+}
+.status-icons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ─── Nav bar ─── */
+.nav-bar {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  flex-shrink: 0;
+  position: relative;
+}
+.nav-bar-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--color-label);
+  letter-spacing: -0.41px;
+  white-space: nowrap;
+}
+.nav-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--ios-blue);
+  font-size: 17px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-family: var(--font-family);
+  -webkit-tap-highlight-color: transparent;
+}
+.nav-back-btn svg { flex-shrink: 0; }
+.nav-action-btn {
+  background: none;
+  border: none;
+  color: var(--ios-blue);
+  font-size: 17px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ─── Scrollable content ─── */
+.scroll-content {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 16px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.scroll-content::-webkit-scrollbar { display: none; }
+
+/* ─── Detail header card ─── */
+.detail-header-card {
+  border-radius: var(--radius-base);
+  overflow: hidden;
+  position: relative;
+  background: var(--color-surface);
+  box-shadow: 0 0 0 0 transparent, 0 5px 12px rgba(0,0,0,0.15);
+}
+
+.detail-bg-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+}
+
+/* Blurred background image using CSS gradient + overlay */
+.detail-bg-overlay {
+  width: 100%;
+  height: 200px;
+  position: relative;
+  overflow: hidden;
+}
+.detail-bg-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #8FB5FF 0%, #B8A9FF 40%, #FFB5A0 100%);
+}
+.detail-bg-blur {
+  position: absolute;
+  inset: 0;
+  background: inherit;
+  backdrop-filter: blur(0);
+}
+
+.detail-info-overlay {
+  background: rgba(255,255,255,0.78);
+  backdrop-filter: blur(20px) saturate(1.8);
+  -webkit-backdrop-filter: blur(20px) saturate(1.8);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .detail-info-overlay {
+    background: rgba(50,50,52,0.82);
+  }
+}
+
+.detail-thumbnail-row {
+  display: flex;
+  justify-content: center;
+}
+.detail-thumbnail {
+  width: 100px;
+  height: 100px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+}
+.detail-thumbnail-inner {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #8FB5FF 0%, #B8A9FF 40%, #FFB5A0 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.detail-thumbnail-inner svg { opacity: 0.6; }
+
+.detail-event-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-label);
+  line-height: 1.25;
+}
+
+.detail-meta-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* ─── EventDetailRow ─── */
+.event-detail-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--color-label);
+}
+.event-detail-row svg {
+  flex-shrink: 0;
+  color: var(--color-label);
+  opacity: 0.75;
+}
+
+/* ─── All Day capsule badge ─── */
+.all-day-badge {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(120,120,128,0.28);
+  border-radius: 100px;
+  padding: 2px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-label);
+  letter-spacing: 0.2px;
+  height: 24px;
+  white-space: nowrap;
+}
+
+/* Time text (regular event) */
+.event-time-text {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--color-label);
+}
+
+/* ─── Description card ─── */
+.description-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-base);
+  padding: 16px;
+  box-shadow: 0 5px 12px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.description-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-label);
+  margin-bottom: 4px;
+}
+.description-body {
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--color-label);
+  line-height: 1.55;
+}
+
+/* ─── Action buttons ─── */
+.action-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 16px;
+  background: #007AFF;
+  border-radius: var(--radius-base);
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-family);
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.22);
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.15s;
+}
+.action-btn:active { opacity: 0.75; }
+.action-btn + .action-btn { margin-top: -4px; }
+
+/* ─── Variant label (floating badge showing current state) ─── */
+.variant-pill {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.9);
+  white-space: nowrap;
+  z-index: 50;
+  pointer-events: none;
+}
+
+/* ─── Home indicator ─── */
+.home-indicator {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 134px;
+  height: 5px;
+  background: var(--color-label);
+  border-radius: 3px;
+  opacity: 0.18;
+  z-index: 200;
+}
