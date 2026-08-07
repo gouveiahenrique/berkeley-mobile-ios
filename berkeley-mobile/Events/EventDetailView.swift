@@ -152,8 +152,18 @@ struct BMDetailHeaderView: View {
     
     @ViewBuilder
     private var timeView: some View {
-        if let timePart = event.dateString.components(separatedBy: " / ").last {
-             EventDetailRow(systemImageName: "clock", text: timePart)
+        if event.isAllDay == true {
+            HStack(spacing: 6) {
+                Image(systemName: "clock")
+                    .font(.system(size: 16))
+                Text("All Day")
+                    .font(Font(BMFont.bold(12)))
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 4)
+                    .background(Capsule().fill(Color.gray.opacity(0.25)))
+            }
+        } else if let timePart = event.dateString.components(separatedBy: " / ").last {
+            EventDetailRow(systemImageName: "clock", text: timePart)
         }
     }
 
