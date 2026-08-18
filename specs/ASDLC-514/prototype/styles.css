@@ -1,0 +1,774 @@
+/* ══════════════════════════════════════════════════════════════
+   ASDLC-514 Prototype — Event Detail: All Day Indicator
+   Design tokens extracted from berkeley-mobile codebase via CodeGraph
+   ══════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Extracted from BMColor (Colors.swift, Colors+Calendar.swift) ── */
+  --app-accent:        #FB9B8E;   /* BMColor.selectedButtonBackground (salmon pink) */
+  --color-cal-blue:    #5670B9;   /* BMColor.Calendar.dayOfWeekHeader */
+  --color-bg:          #FAFAFA;   /* BMColor.modalBackground light  (250/255) */
+  --color-surface:     #FFFFFF;   /* BMColor.cardBackground light */
+  --color-label:       #2C2C2D;   /* BMColor.Calendar.blackText light (44,44,45/255) */
+  --color-muted:       #626162;   /* BMColor.Calendar.grayedText light (98,97,98/255) */
+  --color-border:      rgba(0, 0, 0, 0.08);
+  --color-error:       #FF3B30;
+  --color-allday-fill: rgba(120, 120, 128, 0.5); /* from AllDayEventBannerView */
+
+  /* ── iOS system colors ── */
+  --ios-blue:   #007AFF;
+  --ios-green:  #34C759;
+  --ios-red:    #FF3B30;
+  --ios-separator: rgba(0,0,0,0.12);
+
+  /* ── Typography — Apercu font family (BMFont) ── */
+  --font-family: 'Apercu', -apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif;
+
+  /* ── Spacing & geometry ── */
+  --radius-base:   12px;    /* RoundedRectangle(cornerRadius: 12) in EventDetailView */
+  --radius-card:   12px;
+  --radius-thumb:  10px;    /* thumbnail cornerRadius: 10 */
+  --radius-capsule: 50px;
+  --spacing-unit:  16px;    /* .padding() default */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg:      #414141;   /* BMColor.modalBackground dark (65/255) */
+    --color-surface: #484747;   /* BMColor.cardBackground dark (72,71,71/255) */
+    --color-label:   #FAFAFA;   /* BMColor.Calendar.blackText dark */
+    --color-muted:   #AAAAAA;   /* BMColor.Calendar.grayedText dark (170/255) */
+    --color-border:  rgba(255,255,255,0.12);
+    --color-allday-fill: rgba(120, 120, 128, 0.55);
+    --ios-separator: rgba(255,255,255,0.12);
+  }
+}
+
+/* ── Global reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+button { border: none; background: none; cursor: pointer; font-family: inherit; }
+svg { display: block; }
+
+body {
+  background: #0e1219;
+  min-height: 100vh;
+  font-family: var(--font-family);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   PROTOTYPE STAGE
+   ══════════════════════════════════════════════════════════════ */
+
+.prototype-stage {
+  display: flex;
+  align-items: flex-start;
+  gap: 40px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   IPHONE 15 PRO FRAME
+   ══════════════════════════════════════════════════════════════ */
+
+.iphone-frame {
+  width: 393px;
+  height: 852px;
+  background: #1a1a1a;
+  border-radius: 55px;
+  box-shadow:
+    0 0 0 2px #3a3a3c,
+    0 0 0 6px #1c1c1e,
+    0 50px 100px rgba(0,0,0,0.7),
+    inset 0 0 0 1px rgba(255,255,255,0.05);
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.dynamic-island {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 34px;
+  background: #000;
+  border-radius: 20px;
+  z-index: 200;
+}
+
+.screen-area {
+  position: absolute;
+  inset: 0;
+  border-radius: 55px;
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   SCREEN SYSTEM — push/pop navigation
+   ══════════════════════════════════════════════════════════════ */
+
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg);
+  transform: translateX(100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              opacity 300ms ease;
+  will-change: transform, opacity;
+}
+
+.screen.active {
+  transform: translateX(0);
+  opacity: 1;
+  pointer-events: all;
+}
+
+.screen.exiting {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+.screen.behind {
+  transform: translateX(-30%);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   STATUS BAR
+   ══════════════════════════════════════════════════════════════ */
+
+.status-bar {
+  height: 54px;
+  padding: 14px 28px 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-shrink: 0;
+  color: var(--color-label);
+}
+
+.status-time {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+}
+
+.status-icons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   NAVIGATION BAR
+   ══════════════════════════════════════════════════════════════ */
+
+.nav-bar {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex-shrink: 0;
+  padding: 0 16px;
+}
+
+.nav-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--color-label);
+  letter-spacing: -0.41px;
+}
+
+.nav-bar--events .nav-title {
+  font-size: 17px;
+}
+
+.nav-back {
+  position: absolute;
+  left: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--ios-blue);
+  font-size: 17px;
+  font-weight: 400;
+  letter-spacing: -0.41px;
+  padding: 8px;
+}
+
+.nav-back svg {
+  color: var(--ios-blue);
+}
+
+.nav-action {
+  position: absolute;
+  right: 12px;
+  color: var(--ios-blue);
+  padding: 8px;
+}
+
+/* Hairline separator under nav */
+.nav-bar::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 0.5px;
+  background: var(--ios-separator);
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   SCROLL CONTENT
+   ══════════════════════════════════════════════════════════════ */
+
+.scroll-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding: 12px 16px 20px;
+}
+
+.scroll-content::-webkit-scrollbar { display: none; }
+
+.scroll-content--detail {
+  padding: 20px 16px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   HOME INDICATOR
+   ══════════════════════════════════════════════════════════════ */
+
+.home-indicator {
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.home-pill {
+  width: 130px;
+  height: 5px;
+  background: var(--color-label);
+  border-radius: 3px;
+  opacity: 0.18;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   CARD SHADOW  (shadowfy() modifier)
+   ══════════════════════════════════════════════════════════════ */
+
+.card-shadow {
+  box-shadow:
+    0 2px 8px rgba(0,0,0,0.08),
+    0 1px 2px rgba(0,0,0,0.06);
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   EVENTS LIST SECTION HEADER
+   ══════════════════════════════════════════════════════════════ */
+
+.section-header {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+  margin-top: 4px;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   EVENT CARD  (EventRowView replica)
+   frame(height: 150), .padding(), .shadowfy()
+   ══════════════════════════════════════════════════════════════ */
+
+.event-card {
+  height: 150px;
+  background: var(--color-surface);
+  border-radius: var(--radius-card);
+  margin-bottom: 12px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 150ms ease, box-shadow 150ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.event-card:active {
+  transform: scale(0.98);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+.event-card-body {
+  display: flex;
+  align-items: stretch;
+  height: 100%;
+  padding: 14px;
+  gap: 12px;
+}
+
+.event-card-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.event-card-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-label);
+  line-height: 1.3;
+}
+
+.event-card-spacer { flex: 1; }
+
+.event-card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.event-card-date,
+.event-card-location {
+  font-size: 11px;
+  font-weight: 300;
+  color: var(--color-muted);
+}
+
+/* All Day Banner — matches AllDayEventBannerView from codebase:
+   Capsule().fill(.gray.opacity(0.5)).frame(height: 30)
+   "All Day" BMFont.bold(15) + event name BMFont.regular(12)         */
+.allday-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-allday-fill);
+  border-radius: var(--radius-capsule);
+  height: 30px;
+  padding: 4px 10px;
+  overflow: hidden;
+}
+
+.allday-banner-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-label);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.allday-banner-name {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--color-label);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+/* ── Event card image thumbnails ── */
+
+.event-card-img {
+  width: 110px;
+  height: 110px;
+  border-radius: var(--radius-card);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  align-self: center;
+}
+
+.event-img--berkblue {
+  background: linear-gradient(140deg, #003262 0%, #3B6EA5 55%, #5670B9 100%);
+}
+
+.event-img--teal {
+  background: linear-gradient(140deg, #1a4a6a 0%, #2a7a9a 60%, #4aA4B9 100%);
+}
+
+.event-img--gold {
+  background: linear-gradient(140deg, #7a5500 0%, #C68B00 55%, #FDB515 100%);
+}
+
+.event-img-overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   EVENT DETAIL — BMDetailHeaderView replica
+   ══════════════════════════════════════════════════════════════ */
+
+.detail-header {
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  position: relative;
+  min-height: 270px;
+}
+
+/* Full background image layer */
+.detail-header-bg {
+  position: absolute;
+  inset: 0;
+}
+
+.detail-bg--berkblue {
+  background: linear-gradient(155deg, #001b3d 0%, #003262 35%, #3B6EA5 70%, #5670B9 100%);
+}
+
+.detail-bg--teal {
+  background: linear-gradient(155deg, #0d2e3f 0%, #1a4a6a 40%, #2a7a9a 80%, #4aA4B9 100%);
+}
+
+/* Frosted glass overlay card — .background(.regularMaterial) */
+.detail-overlay-card {
+  position: relative;
+  z-index: 1;
+  background: rgba(250, 250, 250, 0.82);
+  backdrop-filter: blur(12px) saturate(1.2);
+  -webkit-backdrop-filter: blur(12px) saturate(1.2);
+  border-radius: var(--radius-card);
+  margin: 100px 12px 12px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .detail-overlay-card {
+    background: rgba(55, 55, 55, 0.85);
+  }
+}
+
+/* Centered thumbnail */
+.detail-thumbnail {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-thumb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  margin-bottom: 4px;
+}
+
+.detail-thumb--berkblue {
+  background: linear-gradient(140deg, #001b3d 0%, #3B6EA5 100%);
+}
+
+.detail-thumb--teal {
+  background: linear-gradient(140deg, #0d2e3f 0%, #2a7a9a 100%);
+}
+
+/* Event name — BMFont.bold(20) */
+.detail-event-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-label);
+  line-height: 1.25;
+}
+
+/* Info rows container */
+.detail-info-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+/* Single info row — EventDetailRow: HStack{ Image + Text } */
+.detail-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.detail-row-icon {
+  flex-shrink: 0;
+  color: var(--color-muted);
+}
+
+/* Regular time/date/location text — BMFont.regular(12) */
+.detail-row-text {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--color-muted);
+  line-height: 1.3;
+}
+
+/* ════════════════════════════════════
+   ★ ALL DAY TIME BADGE (THE FIX)
+   Replaces the "12:00 AM" text in the time row when isAllDay == true.
+   Styled to match AllDayEventBannerView: Capsule, .gray.opacity(0.5),
+   BMFont.bold(15) for the label.
+   BR-006: clock icon remains visible beside the capsule.
+   ════════════════════════════════════ */
+.allday-time-badge {
+  display: inline-flex;
+  align-items: center;
+  background: var(--color-allday-fill);
+  border-radius: var(--radius-capsule);
+  padding: 3px 10px;
+  height: 26px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-label);
+  letter-spacing: -0.1px;
+  user-select: none;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   DESCRIPTION CARD — BMDetailDescriptionView
+   ══════════════════════════════════════════════════════════════ */
+
+.detail-description {
+  background: var(--color-surface);
+  border-radius: var(--radius-card);
+  padding: 16px;
+}
+
+.detail-desc-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-label);
+  margin-bottom: 10px;
+}
+
+.detail-desc-body {
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--color-muted);
+  line-height: 1.6;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   ACTION BUTTONS — BMActionButton
+   ══════════════════════════════════════════════════════════════ */
+
+.detail-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.action-btn {
+  width: 100%;
+  height: 50px;
+  background: var(--app-accent);
+  color: #fff;
+  border-radius: var(--radius-card);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  transition: filter 150ms ease, transform 100ms ease;
+}
+
+.action-btn:active {
+  filter: brightness(0.92);
+  transform: scale(0.98);
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   ANNOTATION PANEL (beside iPhone frame)
+   ══════════════════════════════════════════════════════════════ */
+
+.annotation-panel {
+  width: 280px;
+  flex-shrink: 0;
+  color: rgba(255,255,255,0.9);
+  font-size: 14px;
+  padding-top: 60px;
+}
+
+.annotation-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--app-accent);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.annotation-subtitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.2;
+  margin-bottom: 28px;
+}
+
+.annotation-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.annotation-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.annotation-step-num {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-cal-blue);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.annotation-step-text {
+  font-size: 14px;
+  color: rgba(255,255,255,0.8);
+  line-height: 1.4;
+}
+
+.annotation-step-text strong {
+  color: #fff;
+}
+
+.annotation-legend {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.legend-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.legend-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.legend-badge--allday {
+  background: rgba(120, 120, 128, 0.55);
+  color: #fff;
+}
+
+.legend-time {
+  font-size: 12px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.6);
+  flex-shrink: 0;
+}
+
+.legend-label {
+  font-size: 12px;
+  color: rgba(255,255,255,0.55);
+}
+
+/* Acceptance criteria checklist */
+.annotation-acs {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.ac-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 10px;
+}
+
+.ac-item {
+  font-size: 12px;
+  padding: 3px 0;
+  color: rgba(255,255,255,0.65);
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  line-height: 1.4;
+}
+
+.ac-item::before {
+  content: '';
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.ac-pass::before {
+  background: var(--ios-green);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 7l3 3 5-5'/%3E%3C/svg%3E");
+  background-size: cover;
+}
+
+/* ── Responsive: stack vertically on small screens ── */
+@media (max-width: 740px) {
+  .annotation-panel {
+    width: 100%;
+    max-width: 393px;
+    padding-top: 0;
+  }
+  .prototype-stage {
+    flex-direction: column;
+    align-items: center;
+  }
+}
