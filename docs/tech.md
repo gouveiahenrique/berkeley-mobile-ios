@@ -12,10 +12,12 @@ The project is maintained by ASUC OCTO (Associated Students of the University of
 |---|---|
 | Primary language | Swift |
 | UI frameworks | UIKit and SwiftUI (coexist in the same app) |
-| Dependency manager | CocoaPods (`Podfile`, `Podfile.lock`) |
+| Dependency managers | CocoaPods (`Podfile`, `Podfile.lock`) and Swift Package Manager (`berkeley-mobile.xcodeproj/project.pbxproj` `XCRemoteSwiftPackageReference` entries, resolved in `berkeley-mobile.xcworkspace/xcshareddata/swiftpm/Package.resolved`) |
 | Widget extension | SwiftUI + WidgetKit (`BerkeleyMobileWidget` target) |
 
 ## Primary Dependencies
+
+### CocoaPods
 
 Declared in `Podfile` and resolved in `Podfile.lock`:
 
@@ -27,7 +29,15 @@ Declared in `Podfile` and resolved in `Podfile.lock`:
 | `Firebase/Auth` | Firebase authentication SDK (imported in `AppDelegate.swift`) |
 | `FirebaseMessaging` | Push notification token management |
 | `GoogleSignIn` | Google identity provider (imported in `AppDelegate.swift`) |
-| `FactoryKit` | Dependency injection container |
+
+### Swift Package Manager
+
+Declared as `XCRemoteSwiftPackageReference` entries in `berkeley-mobile.xcodeproj/project.pbxproj`:
+
+| Package | Repository | Purpose |
+|---|---|---|
+| `FactoryKit` (product of package "Factory") | `https://github.com/hmlongco/Factory.git` | Dependency injection container |
+| `Glur` | `https://github.com/joogps/Glur.git` | SwiftUI progressive-blur view modifier (`.glur(...)`), used in `berkeley-mobile/Today/Tiles/News Tile/NewsTileView.swift` |
 
 ## Xcode Targets
 
