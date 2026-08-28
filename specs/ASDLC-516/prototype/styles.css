@@ -1,0 +1,373 @@
+/* ── Design tokens extracted from codebase via CodeGraph ── */
+:root {
+  --app-accent:        #5670B9;  /* BMColor.Calendar.dayOfWeekHeader */
+  --color-bg:          #FAFAFA;  /* BMColor.modalBackground light */
+  --color-surface:     #FFFFFF;  /* BMColor.cardBackground light */
+  --color-label:       #2C2C2D;  /* BMColor.Calendar.blackText light */
+  --color-muted:       #626162;  /* BMColor.Calendar.grayedText light */
+  --color-border:      rgba(84,84,88,0.25);
+  --color-allday-bg:   rgba(120,120,128,0.18);
+  --radius-card:       10px;
+  --radius-inner:      12px;
+  --spacing:           8px;
+  --font-family:       'Apercu', -apple-system, 'SF Pro Text', system-ui, sans-serif;
+
+  /* iOS system */
+  --ios-blue:   #007AFF;
+  --ios-green:  #34C759;
+  --ios-red:    #FF3B30;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg:        #000000;
+    --color-surface:   #1C1C1E;
+    --color-label:     #FAFAFA;
+    --color-muted:     #AAAAAA;
+    --color-border:    rgba(84,84,88,0.65);
+    --color-allday-bg: rgba(120,120,128,0.32);
+  }
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Stage ── */
+body {
+  background: #1a1a2e;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-family: var(--font-family);
+}
+
+/* ── iPhone 15 Pro frame ── */
+.iphone-frame {
+  width: 393px;
+  height: 852px;
+  background: #000;
+  border-radius: 55px;
+  box-shadow:
+    0 0 0 2px #3a3a3c,
+    0 0 0 6px #1c1c1e,
+    0 40px 80px rgba(0,0,0,0.6);
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.dynamic-island {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 34px;
+  background: #000;
+  border-radius: 20px;
+  z-index: 100;
+}
+
+.screen-area {
+  position: absolute;
+  inset: 0;
+  border-radius: 55px;
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+/* ── Screen panels ── */
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg);
+  transform: translateX(100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 300ms ease, opacity 300ms ease;
+  will-change: transform, opacity;
+}
+.screen.active {
+  transform: translateX(0);
+  opacity: 1;
+  pointer-events: all;
+}
+.screen.exiting {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+/* ── Status bar ── */
+.status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 54px;
+  padding: 14px 28px 0;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+}
+.status-time {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-label);
+  letter-spacing: -0.3px;
+}
+.status-icons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.status-icons svg {
+  fill: var(--color-label);
+}
+
+/* ── Navigation bar ── */
+.nav-bar {
+  display: flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 16px;
+  flex-shrink: 0;
+  border-bottom: 0.5px solid var(--color-border);
+  position: relative;
+}
+.nav-back {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--app-accent);
+  font-size: 17px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: var(--font-family);
+}
+.nav-back svg { fill: var(--app-accent); }
+.nav-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--color-label);
+  letter-spacing: -0.4px;
+  white-space: nowrap;
+}
+.nav-action {
+  margin-left: auto;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--app-accent);
+  display: flex;
+  align-items: center;
+}
+.nav-action svg { fill: var(--app-accent); }
+
+/* ── Scroll area ── */
+.scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px 16px 34px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.scroll-area::-webkit-scrollbar { display: none; }
+
+/* ── Hero card (header) ── */
+.event-hero {
+  border-radius: var(--radius-inner);
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+  background: var(--color-surface);
+}
+
+.hero-bg-img {
+  width: 100%;
+  height: 220px;
+  background: linear-gradient(135deg, #5670B9 0%, #8fa3d8 50%, #c8d4f0 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-bg-img .event-thumb {
+  width: 90px;
+  height: 90px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.25);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hero-bg-img .event-thumb svg {
+  fill: rgba(255,255,255,0.8);
+}
+
+.hero-info {
+  padding: 14px 14px 16px;
+  background: rgba(255,255,255,0.82);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border-top: 0.5px solid rgba(0,0,0,0.06);
+}
+@media (prefers-color-scheme: dark) {
+  .hero-info {
+    background: rgba(28,28,30,0.82);
+    border-top-color: rgba(255,255,255,0.08);
+  }
+}
+
+.hero-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-label);
+  line-height: 1.3;
+  margin-bottom: 10px;
+}
+
+.hero-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* ── EventDetailRow ── */
+.detail-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--color-label);
+}
+.detail-row svg {
+  fill: var(--color-muted);
+  flex-shrink: 0;
+}
+.detail-row-text {
+  font-size: 12px;
+  color: var(--color-label);
+}
+
+/* ── All Day capsule badge ── */
+.allday-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  background: var(--color-allday-bg);
+  border-radius: 999px;
+  gap: 6px;
+}
+.allday-badge-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-label);
+  letter-spacing: -0.1px;
+}
+
+/* ── Bug state (old behavior) ── */
+.time-bug {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--color-label);
+}
+.time-bug svg { fill: var(--color-muted); flex-shrink: 0; }
+
+/* ── Description card ── */
+.desc-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-card);
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.desc-card-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-label);
+  margin-bottom: 10px;
+}
+.desc-card-body {
+  font-size: 12px;
+  color: var(--color-muted);
+  line-height: 1.55;
+}
+
+/* ── Action buttons ── */
+.action-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: var(--radius-card);
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-family);
+  transition: opacity 0.15s;
+}
+.action-btn:active { opacity: 0.7; }
+.action-btn-primary {
+  background: var(--app-accent);
+  color: #fff;
+}
+.action-btn-secondary {
+  background: rgba(86,112,185,0.12);
+  color: var(--app-accent);
+}
+
+/* ── Toggle toggle bar ── */
+.toggle-bar {
+  position: fixed;
+  bottom: 96px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  background: rgba(30,30,46,0.9);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  padding: 4px;
+  gap: 2px;
+  z-index: 200;
+}
+.toggle-btn {
+  padding: 7px 16px;
+  border-radius: 16px;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-family);
+  transition: background 0.2s, color 0.2s;
+  background: transparent;
+  color: rgba(255,255,255,0.55);
+}
+.toggle-btn.active {
+  background: var(--app-accent);
+  color: #fff;
+}
+
+/* ── Home indicator ── */
+.home-indicator {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 134px;
+  height: 5px;
+  background: var(--color-label);
+  opacity: 0.18;
+  border-radius: 3px;
+  z-index: 50;
+}
