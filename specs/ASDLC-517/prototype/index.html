@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ASDLC-517 — All Day Event Indicator</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Stage controls (outside the frame) -->
+  <div class="stage-controls">
+    <div class="toggle-bar">
+      <button class="toggle-btn active" id="btn-after" onclick="setMode('after')">After Fix — All Day Badge</button>
+      <button class="toggle-btn" id="btn-before" onclick="setMode('before')">Before — Bug (12:00 AM)</button>
+    </div>
+  </div>
+
+  <!-- iPhone 15 Pro Frame -->
+  <div class="iphone-frame">
+    <div class="dynamic-island"></div>
+
+    <div class="screen-area">
+
+      <!-- ======= SCREEN: Event Detail ======= -->
+      <div id="screen-event-detail" class="screen">
+
+        <!-- Status Bar -->
+        <div class="status-bar">
+          <span class="status-time">9:41</span>
+          <div class="status-icons">
+            <!-- Signal -->
+            <svg width="17" height="12" viewBox="0 0 17 12" fill="none">
+              <rect x="0" y="7" width="3" height="5" rx="1" fill="currentColor" opacity="0.4" style="color:var(--color-label)"/>
+              <rect x="4.5" y="5" width="3" height="7" rx="1" fill="currentColor" opacity="0.4" style="color:var(--color-label)"/>
+              <rect x="9" y="3" width="3" height="9" rx="1" fill="currentColor" opacity="0.4" style="color:var(--color-label)"/>
+              <rect x="13.5" y="0" width="3" height="12" rx="1" fill="currentColor" style="color:var(--color-label)"/>
+            </svg>
+            <!-- WiFi -->
+            <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+              <path d="M8 9.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z" fill="currentColor" style="color:var(--color-label)"/>
+              <path d="M4.2 7.2A5.3 5.3 0 0 1 8 5.7c1.45 0 2.77.58 3.74 1.52" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none" style="color:var(--color-label)"/>
+              <path d="M1.4 4.4A9 9 0 0 1 8 2a9 9 0 0 1 6.6 2.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none" style="color:var(--color-label)" opacity="0.6"/>
+            </svg>
+            <!-- Battery -->
+            <svg width="25" height="12" viewBox="0 0 25 12" fill="none">
+              <rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="currentColor" stroke-opacity="0.35" style="color:var(--color-label)"/>
+              <rect x="2" y="2" width="16" height="8" rx="2" fill="currentColor" style="color:var(--color-label)"/>
+              <path d="M23 4.5v3a1.5 1.5 0 0 0 0-3z" fill="currentColor" opacity="0.4" style="color:var(--color-label)"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Navigation Bar -->
+        <div class="nav-bar">
+          <div class="nav-back">
+            <svg width="10" height="17" viewBox="0 0 10 17" fill="none">
+              <path d="M8.5 1L1 8.5l7.5 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span style="font-size:17px;">Events</span>
+          </div>
+          <span class="nav-title">Event Detail</span>
+          <div class="nav-action">
+            <!-- calendar.badge.plus icon -->
+            <svg width="24" height="22" viewBox="0 0 24 22" fill="none">
+              <rect x="1" y="3" width="18" height="16" rx="3" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M1 8h18" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M6 1v4M14 1v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="19" cy="17" r="4" fill="var(--color-bg)" stroke="currentColor" stroke-width="0"/>
+              <path d="M17 17h4M19 15v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Scroll Content -->
+        <div class="scroll-content">
+
+          <!-- Event Header Card -->
+          <div class="event-header-card">
+            <!-- Background image (campus photo via SVG gradient placeholder) -->
+            <svg width="361" height="330" viewBox="0 0 361 330" fill="none" xmlns="http://www.w3.org/2000/svg" class="event-bg-image" style="position:absolute;inset:0;width:100%;height:330px;">
+              <defs>
+                <linearGradient id="bgGrad" x1="0" y1="0" x2="361" y2="330" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#6B81C9"/>
+                  <stop offset="40%" stop-color="#8EA4E8"/>
+                  <stop offset="100%" stop-color="#B8C9F5"/>
+                </linearGradient>
+              </defs>
+              <rect width="361" height="330" fill="url(#bgGrad)"/>
+              <!-- Decorative campus silhouette -->
+              <ellipse cx="180" cy="180" rx="120" ry="90" fill="white" fill-opacity="0.06"/>
+              <rect x="100" y="160" width="160" height="80" rx="4" fill="white" fill-opacity="0.08"/>
+              <rect x="130" y="130" width="30" height="110" rx="4" fill="white" fill-opacity="0.1"/>
+              <rect x="200" y="140" width="28" height="100" rx="4" fill="white" fill-opacity="0.1"/>
+              <rect x="85" y="180" width="190" height="6" rx="2" fill="white" fill-opacity="0.12"/>
+              <circle cx="165" cy="120" r="20" fill="white" fill-opacity="0.06"/>
+            </svg>
+
+            <!-- Frosted overlay -->
+            <div class="event-overlay"></div>
+
+            <div class="event-overlay-content">
+              <!-- Thumbnail -->
+              <div class="event-thumbnail-wrap">
+                <div class="event-thumbnail-placeholder">
+                  <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
+                    <rect x="6" y="4" width="40" height="44" rx="5" stroke="white" stroke-width="2" fill="none" opacity="0.7"/>
+                    <path d="M14 20h24M14 28h16M14 36h20" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
+                    <rect x="14" y="8" width="6" height="6" rx="2" fill="white" opacity="0.5"/>
+                    <rect x="32" y="8" width="6" height="6" rx="2" fill="white" opacity="0.5"/>
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Event name -->
+              <div class="event-name">Fall Career &amp; Internship Fair 2026</div>
+
+              <!-- Detail rows -->
+              <div class="detail-rows">
+                <!-- Date row -->
+                <div class="detail-row">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <rect x="1" y="2.5" width="14" height="12" rx="2.5" stroke="currentColor" stroke-width="1.3" fill="none"/>
+                    <path d="M1 6.5h14" stroke="currentColor" stroke-width="1.3"/>
+                    <path d="M4.5 1v3M11.5 1v3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+                  </svg>
+                  <span>Wednesday, September 16, 2026</span>
+                </div>
+
+                <!-- Time row — toggles between All Day badge (fixed) and "12:00 AM" (bug) -->
+                <div class="detail-row" id="time-row">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/>
+                    <path d="M8 4.5V8l2.5 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <!-- After-fix: All Day badge -->
+                  <span class="all-day-badge" id="all-day-badge">All Day</span>
+                  <!-- Before (bug): time text -->
+                  <span class="time-text-bug" id="time-bug" style="display:none;">12:00 AM</span>
+                </div>
+
+                <!-- Location row -->
+                <div class="detail-row">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M8 1.5C5.52 1.5 3.5 3.52 3.5 6c0 3.75 4.5 8.5 4.5 8.5s4.5-4.75 4.5-8.5C12.5 3.52 10.48 1.5 8 1.5z" stroke="currentColor" stroke-width="1.3" fill="none"/>
+                    <circle cx="8" cy="6" r="1.5" fill="currentColor"/>
+                  </svg>
+                  <span>Zellerbach Hall Plaza, UC Berkeley</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Description Card -->
+          <div class="description-card">
+            <div class="description-title">Description</div>
+            <div class="description-body">
+              Connect with top employers across tech, finance, consulting, and research. Bring printed copies of your resume and dress professionally. Open to all UC Berkeley students and recent graduates. Over 200 companies will be in attendance this fall.
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <button class="action-btn" onclick="showToast('Opening in Safari…', 'info')">Learn More</button>
+          <button class="action-btn secondary" onclick="showToast('Opening registration page…', 'info')">Register</button>
+
+        </div>
+
+        <!-- Home Indicator -->
+        <div class="home-indicator">
+          <div class="home-indicator-pill"></div>
+        </div>
+      </div>
+      <!-- /screen-event-detail -->
+
+    </div><!-- /screen-area -->
+  </div><!-- /iphone-frame -->
+
+  <!-- Toast container -->
+  <div id="toast" style="
+    position:fixed; bottom:120px; left:50%; transform:translateX(-50%) translateY(80px);
+    background:rgba(30,30,30,0.92); color:#fff; border-radius:12px;
+    padding:10px 20px; font-size:14px; z-index:9999;
+    opacity:0; transition:transform 0.3s ease,opacity 0.3s ease;
+    white-space:nowrap; pointer-events:none;
+  "></div>
+
+  <p class="stage-label">ASDLC-517 — All Day Indicator on Event Detail</p>
+
+  <script src="app.js"></script>
+</body>
+</html>
