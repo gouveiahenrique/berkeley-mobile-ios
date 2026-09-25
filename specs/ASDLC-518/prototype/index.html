@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ASDLC-518 — Event Detail: All Day Indicator</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="iphone-frame">
+    <div class="dynamic-island"></div>
+    <div class="screen-area">
+
+      <!-- =====================================================
+           SCREEN: Event Detail (all-day event)
+           ===================================================== -->
+      <div id="screen-detail" class="screen active">
+
+        <!-- Status Bar -->
+        <div class="status-bar">
+          <span class="status-time">9:41</span>
+          <div class="status-icons">
+            <!-- Signal bars -->
+            <svg width="17" height="12" viewBox="0 0 17 12" aria-hidden="true">
+              <rect x="0"    y="7"   width="3" height="5"  rx="0.5" fill="currentColor"/>
+              <rect x="4.5"  y="4.5" width="3" height="7.5" rx="0.5" fill="currentColor"/>
+              <rect x="9"    y="2"   width="3" height="10" rx="0.5" fill="currentColor"/>
+              <rect x="13.5" y="0"   width="3" height="12" rx="0.5" fill="currentColor"/>
+            </svg>
+            <!-- WiFi -->
+            <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-linecap="round" aria-hidden="true">
+              <circle cx="8" cy="11" r="1" fill="currentColor" stroke="none"/>
+              <path d="M5.5 8.4A3.5 3.5 0 0 1 8 7.5a3.5 3.5 0 0 1 2.5 0.9" stroke-width="1.5"/>
+              <path d="M3 5.8A6.5 6.5 0 0 1 8 3.8a6.5 6.5 0 0 1 5 2" stroke-width="1.5"/>
+              <path d="M0.5 3.2A10.5 10.5 0 0 1 8 0.8a10.5 10.5 0 0 1 7.5 2.4" stroke-width="1.5"/>
+            </svg>
+            <!-- Battery -->
+            <svg width="25" height="12" viewBox="0 0 25 12" fill="none" aria-hidden="true">
+              <rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="currentColor" stroke-opacity="0.35"/>
+              <rect x="2" y="2" width="16" height="8" rx="2" fill="currentColor"/>
+              <path d="M23 4v4a2 2 0 0 0 0-4z" fill="currentColor" opacity="0.4"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Navigation Bar -->
+        <div class="nav-bar">
+          <button class="nav-back" aria-label="Back to Events">
+            <svg class="chevron" viewBox="0 0 9 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M7.5 1.5L2 8l5.5 6.5"/>
+            </svg>
+            Events
+          </button>
+          <span class="nav-title"></span>
+          <!-- calendar.badge.plus — add event to calendar -->
+          <button class="nav-action" aria-label="Add to Calendar">
+            <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="17" rx="2.5" stroke-width="1.5"/>
+              <line x1="3" y1="9" x2="21" y2="9" stroke-width="1.5"/>
+              <line x1="8" y1="2" x2="8" y2="5" stroke-width="1.5"/>
+              <line x1="16" y1="2" x2="16" y2="5" stroke-width="1.5"/>
+              <line x1="15.5" y1="15" x2="19.5" y2="15" stroke-width="1.5"/>
+              <line x1="17.5" y1="13" x2="17.5" y2="17" stroke-width="1.5"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Scrollable Content -->
+        <div class="content-scroll">
+
+          <!-- Before / After Compare Toggle -->
+          <div class="compare-panel">
+            <div class="compare-label">
+              This event has <code>isAllDay = true</code>
+            </div>
+            <div class="seg-ctrl" role="tablist">
+              <button id="btn-fixed" class="seg-btn seg-fixed active"
+                      role="tab" aria-selected="true"
+                      onclick="setState('fixed')">
+                Fixed ✓
+              </button>
+              <button id="btn-buggy" class="seg-btn seg-buggy"
+                      role="tab" aria-selected="false"
+                      onclick="setState('buggy')">
+                Current Bug
+              </button>
+            </div>
+          </div>
+
+          <!-- ─────────────────────────────────────────────────
+               Event Header Card  (BMDetailHeaderView)
+               ZStack: gradient background + frosted glass overlay
+               ───────────────────────────────────────────────── -->
+          <div class="header-card">
+            <div class="card-overlay">
+
+              <!-- Thumbnail: 130×130, centered (BMCachedAsyncImageView) -->
+              <div class="event-thumb" aria-label="Cal Day 2026 event image placeholder">CAL</div>
+
+              <!-- Event name: BMFont.bold(20) -->
+              <h1 class="event-name">Cal Day 2026</h1>
+
+              <!-- Info rows: date / time / location -->
+              <div class="info-rows">
+
+                <!-- Date Row: calendar icon + "Friday, April 17, 2026" -->
+                <div class="info-row">
+                  <svg class="info-icon" viewBox="0 0 16 16" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" aria-hidden="true">
+                    <rect x="1.5" y="2.5" width="13" height="12" rx="2"/>
+                    <line x1="1.5" y1="6.5" x2="14.5" y2="6.5"/>
+                    <line x1="5" y1="1" x2="5" y2="3.5"/>
+                    <line x1="11" y1="1" x2="11" y2="3.5"/>
+                  </svg>
+                  <span class="info-text">Friday, April 17, 2026</span>
+                </div>
+
+                <!-- ───────────────────────────────────────────────
+                     TIME ROW — the key change for ASDLC-518
+                     Fixed:       shows "All Day" capsule badge
+                     Current Bug: shows "12:00 AM" plain text
+                     ─────────────────────────────────────────────── -->
+                <div class="info-row" id="time-row" role="region" aria-label="Event time">
+                  <!-- clock icon -->
+                  <svg class="info-icon" viewBox="0 0 16 16" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" aria-hidden="true">
+                    <circle cx="8" cy="8" r="6.5"/>
+                    <polyline points="8,4.5 8,8.2 10.8,10.5"/>
+                  </svg>
+
+                  <!-- FIXED STATE: All Day capsule (mirrors Capsule().fill(.gray.opacity(0.5))) -->
+                  <span class="all-day-badge" id="badge-fixed" aria-label="All Day event">All Day</span>
+
+                  <!-- BUGGY STATE: raw "12:00 AM" — the current (incorrect) behavior -->
+                  <span class="info-text bug-time" id="badge-buggy" style="display:none" aria-label="Time: 12:00 AM">12:00 AM</span>
+                </div>
+
+                <!-- Location Row: mappin + location text -->
+                <div class="info-row">
+                  <svg class="info-icon" viewBox="0 0 16 16" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" aria-hidden="true">
+                    <path d="M8 1.5a4.5 4.5 0 0 1 4.5 4.5c0 3.2-4.5 8.5-4.5 8.5S3.5 9.2 3.5 6A4.5 4.5 0 0 1 8 1.5z"/>
+                    <circle cx="8" cy="6" r="1.5"/>
+                  </svg>
+                  <span class="info-text">Doe Library, 2nd Floor</span>
+                </div>
+
+              </div><!-- .info-rows -->
+            </div><!-- .card-overlay -->
+          </div><!-- .header-card -->
+
+          <!-- Description Card (BMDetailDescriptionView) -->
+          <div class="desc-card">
+            <div class="desc-heading">Description</div>
+            <p class="desc-body">
+              Cal Day is UC Berkeley's official open house for admitted students and their families.
+              Join us for a full day of department showcases, campus tours, and student-led
+              info sessions. Explore 200+ programs across arts, sciences, engineering, and business.
+              Experience the vibrant campus community that makes Berkeley one of the world's great
+              universities — from Doe Library to the Campanile, all day long.
+            </p>
+          </div>
+
+          <!-- Action Buttons (BMActionButton) -->
+          <div class="btn-group">
+            <button class="action-btn">Learn More</button>
+            <button class="action-btn">Register</button>
+          </div>
+
+        </div><!-- .content-scroll -->
+
+        <div class="home-pill" aria-hidden="true"></div>
+
+      </div><!-- #screen-detail -->
+
+    </div><!-- .screen-area -->
+  </div><!-- .iphone-frame -->
+
+  <p class="caption">
+    Toggle between
+    <span class="cap-fixed">Fixed</span> — "All Day" capsule badge
+    &nbsp;and&nbsp;
+    <span class="cap-buggy">Current Bug</span> — misleading "12:00 AM" text
+  </p>
+
+  <script src="app.js"></script>
+</body>
+</html>
