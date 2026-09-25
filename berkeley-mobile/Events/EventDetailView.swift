@@ -152,7 +152,9 @@ struct BMDetailHeaderView: View {
     
     @ViewBuilder
     private var timeView: some View {
-        if let timePart = event.dateString.components(separatedBy: " / ").last {
+        if event.isAllDay == true {
+            AllDayTimeBadge()
+        } else if let timePart = event.dateString.components(separatedBy: " / ").last {
              EventDetailRow(systemImageName: "clock", text: timePart)
         }
     }
@@ -189,6 +191,28 @@ struct EventDetailRow: View {
 }
 
 
+// MARK: - AllDayTimeBadge
+
+private struct AllDayTimeBadge: View {
+    var body: some View {
+        HStack {
+            Capsule()
+                .fill(.gray.opacity(0.5))
+                .frame(height: 24)
+                .overlay(
+                    Text("All Day")
+                        .font(Font(BMFont.bold(12)))
+                        .padding(.horizontal, 10)
+                )
+                .fixedSize()
+            Spacer()
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("All Day")
+    }
+}
+
+
 // MARK: - BMDetailDescriptionView
 
 struct BMDetailDescriptionView: View {
@@ -211,4 +235,12 @@ struct BMDetailDescriptionView: View {
 
 #Preview {
     EventDetailView(event: BMEventCalendarEntry.sampleEntry)
+}
+
+#Preview("All Day Event") {
+    EventDetailView(event: BMEventCalendarEntry(
+        name: "Campus Holiday",
+        date: Date(),
+        isAllDay: true
+    ))
 }
