@@ -1,0 +1,37 @@
+# Code Conventions
+
+## Naming Conventions
+
+- **`BM` prefix for shared domain types**: The repository implements a `BM`-prefixed naming convention for cross-feature model, manager, and reusable-UI types, e.g. `BMGym`, `BMLibrary`, `BMDiningHall`, `BMLocationManager`, `BMNetworkingManager`, `BMEventManager`, `BMConstants`, `BMError`, `BMAlert`, `BMActionButton`, `BMFilterButton`, `BMCachedAsyncImageView`. At least 28 files under `berkeley-mobile/` declare a top-level `class BM...` or `struct BM...` type. Feature-specific types that are not intended for cross-feature reuse (e.g. `MapDataSource`, `MapMarker`, `LibraryDataSource`, `HomeViewModel`) do not carry this prefix.
+- **`k`-prefixed constants**: File-private constants are frequently named with a `k` prefix, e.g. `kMapEndpoint`, `kLibrariesEndpoint`, `kGymsEndpoint`, `kGymClassesEndpoint`, `kLatestLaunchedVersionKey`, `kViewMargin`, `kBookingURL`, `kCardPadding`. These are declared `fileprivate let` at file scope, immediately below the import statements.
+- **View/ViewModel pairing**: SwiftUI-facing feature types are named with a `View`/`ViewModel` suffix pair sharing the same base name (e.g. `HomeView`/`HomeViewModel`, `DiningHallsViewModel`, `EventsViewModel`, `GuidesViewModel`, `SafetyViewModel`, `ResourcesViewModel`, `WeatherDataViewModel`). Each `...ViewModel` is registered as a `Factory<T>` in `berkeley-mobile/BerkeleyMobile+Injection.swift` under a matching camelCase property name.
+- **`UIViewControllerRepresentable` bridge naming**: Where a `UIKit` screen is exposed to SwiftUI, the repository implements a `struct <Name>View: UIViewControllerRepresentable` in the same file as the wrapped `class <Name>ViewController: UIViewController` (e.g. `GymDetailView`/`GymDetailViewController` in `GymDetailViewController.swift`; `LibraryDetailView`/`LibraryDetailViewController` in `LibraryDetailViewController.swift`).
+
+## File Organization Patterns
+
+- Files carry a standard header comment block: file name, project name, author, and copyright line (e.g. `//  AppDelegate.swift`, `//  bm-persona` or `//  berkeley-mobile`, `//  Created by <author> on <date>.`, `//  Copyright © <year> ...`). Older files (2019–2020) show project name `bm-persona`; newer files (2020+) show `berkeley-mobile`, and copyright holder changed from individual names (e.g. "RJ Pimentel") to "ASUC OCTO" starting around 2020.
+- `// MARK: -` section comments are used pervasively to delimit logical sections within a file (e.g. `// MARK: - MapViewController`, `// MARK: - Analytics`, `// MARK: UISceneSession Lifecycle`), including to separate a type's core declaration from `extension`-based grouping of related functionality (e.g. `GymDetailViewController`'s view-setup code and analytics logging are implemented in separate `extension GymDetailViewController { ... }` blocks within the same file).
+- Feature `DataSource` types are colocated with their models in a dedicated subfolder named `<Feature>DataSource/` (e.g. `Home/Map/MapDataSource/`, `Home/Libraries/LibraryDataSource/`, `Home/Fitness/GymDataSource/`, `Home/Fitness/GymClassDataSource/`, `Home/Dining/DiningDataSource/`, `Events/EventDataSource/`).
+
+## Architectural Patterns
+
+- **Singleton managers**: Cross-cutting services are implemented as singletons exposed via a `static let/var shared` property: `DataManager.shared`, `BMLocationManager.shared`, `BMNetworkingManager.shared`, `ImageLoader.shared`, `EventsDataService.shared`.
+- **Dependency injection via `FactoryKit`**: View models (as opposed to singleton managers) are registered as `Factory<T>` properties on an extended `Container` type in `berkeley-mobile/BerkeleyMobile+Injection.swift`, and resolved at usage sites via `Container.shared.<property>.resolve()` (e.g. `berkeley-mobile/Home/Map/MapViewController.swift:81`) or the `@Injected`/`@InjectedObservable` property wrappers in SwiftUI views (e.g. `berkeley-mobile/Home/HomeView.swift:13-15`). Each `Factory` declares an explicit lifetime: `.shared`, `.singleton`, or the FactoryKit default (unscoped, a new instance per resolution) when no lifetime modifier is present.
+- **Protocol-oriented model composition**: Domain models compose behavior by conforming to small, single-purpose protocols under `berkeley-mobile/Data/ItemProtocols/` (`HasName`, `HasLocation`, `HasImage`, `HasOpenTimes`, `HasWebsite`, `HasPhoneNumber`, `CanFavorite`, `SearchItem`) rather than through class inheritance.
+- **State containers over class inheritance for view models**: The repository implements view models using two different observation mechanisms: older/some view models conform to `ObservableObject` with `@Published` properties (e.g. `HomeViewModel`), while newer view models use the `@Observable` macro (e.g. `EventsViewModel`, annotated `@MainActor @Observable`). Both patterns are present in the current codebase; this document does not assert one supersedes the other, only that both exist.
+- **Delegate-based drawer/gesture composition**: Screens that need a sliding drawer conform to a shared delegate protocol (`DrawerViewDelegate`, `SearchDrawerViewDelegate`) rather than subclassing a common base view controller, allowing `MapViewController` and other screens to opt into shared pan-gesture handling (`handlePanGesture(gesture:)`, `handlePan(gesture:)` in `DrawerViewController.swift`) while remaining `UIViewController` subclasses directly.
+
+## Documentation Style
+
+- Doc comments on public/internal API surface use triple-slash (`///`) Swift documentation comments, sometimes with `- Parameter` and `- Returns` markup (e.g. `BMLocationManager.swift`, `MapMarkerDetailView.swift`'s `MapMarkerDetail.view(_:)`).
+- `// TODO:` comments mark known incompleteness directly in source (e.g. `DataManager.swift`: `// TODO: Make this O(1).`; `MapMarkerDetailView.swift`: `// TODO: A bit expensive to remake views + constraints. Fix by keeping references to views.`; `MapMarkerDetailView.swift`: `// TODO: Get distance to marker`).
+
+## Error Handling
+
+- Two distinct error-handling styles coexist, matching the two Firestore access patterns documented in `docs/api-standards.md`: completion-handler-based `DataSource` implementations log failures with `print("[Error @ <Type>.<method>()]: \(err)")` and silently drop the fetch (no completion call); newer `async throws` code (`BMNetworkingManager`, `EventsDataService`) propagates errors via Swift's `throws` mechanism, or uses `try?` to drop individual malformed documents during decoding.
+- A dedicated `BMError: Error` enum (`berkeley-mobile/Data/BMError.swift`) is implemented for calendar-integration failures (`eventAlreadyAddedInCalendar`, `insufficientAccessToCalendar`, `mayExistedInCalendarAlready`, `unableToFindEventInCalendar`), with user-facing messages supplied via `LocalizedError.errorDescription` and `NSLocalizedString`.
+
+## Configuration Management
+
+- App-wide constants (Firestore collection names, map bounds, section titles) are centralized in `berkeley-mobile/Data/BMConstants.swift` as `static let`/`static var` members of a single `struct BMConstants`, grouped with `// MARK:` sections (`Strings`, `Map`, `Firebase`).
+- User-facing persisted state is centralized through a typed `UserDefaultsKeys` enum and `UserDefaults` extension (`berkeley-mobile/Utils/UserDefaults+Extension.swift`), which the repository uses in place of raw string keys at call sites (e.g. `UserDefaults.standard.increment(forKey: UserDefaultsKeys.numAppLaunchForAppStoreReview)` in `AppDelegate.swift:22`).
