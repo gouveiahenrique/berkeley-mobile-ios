@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ASDLC-533 — All Day Event Indicator Prototype</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="iphone-frame">
+    <div class="dynamic-island"></div>
+    <div class="screen-area">
+
+      <!-- ── Status Bar ─────────────────────────────── -->
+      <div class="status-bar">
+        <span class="status-time">9:41</span>
+        <div class="status-icons">
+          <!-- Signal bars -->
+          <svg width="17" height="12" viewBox="0 0 17 12" fill="none">
+            <rect x="0" y="8" width="3" height="4" rx="0.5" fill="currentColor" style="color:var(--color-label)"/>
+            <rect x="4.5" y="5.5" width="3" height="6.5" rx="0.5" fill="currentColor" style="color:var(--color-label)"/>
+            <rect x="9" y="3" width="3" height="9" rx="0.5" fill="currentColor" style="color:var(--color-label)"/>
+            <rect x="13.5" y="0" width="3" height="12" rx="0.5" fill="currentColor" style="color:var(--color-label);opacity:0.3"/>
+          </svg>
+          <!-- WiFi -->
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+            <path d="M8 9.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5z" fill="currentColor" style="color:var(--color-label)"/>
+            <path d="M8 6C9.7 6 11.2 6.7 12.3 7.8L13.4 6.7C12 5.3 10.1 4.5 8 4.5S4 5.3 2.6 6.7l1.1 1.1C4.8 6.7 6.3 6 8 6z" fill="currentColor" style="color:var(--color-label)"/>
+            <path d="M8 2.5c2.8 0 5.3 1.1 7.1 2.9L16.2 4.3C14 2.2 11.1 1 8 1S2 2.2-.2 4.3l1.1 1.1C2.7 3.6 5.2 2.5 8 2.5z" fill="currentColor" style="color:var(--color-label);opacity:0.4"/>
+          </svg>
+          <!-- Battery -->
+          <svg width="25" height="12" viewBox="0 0 25 12" fill="none">
+            <rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="currentColor" stroke-opacity="0.35" style="color:var(--color-label)"/>
+            <rect x="2" y="2" width="16" height="8" rx="2" fill="currentColor" style="color:var(--color-label)"/>
+            <path d="M23 4v4a2 2 0 0 0 0-4z" fill="currentColor" style="color:var(--color-label);opacity:0.4"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- ── Navigation Bar ─────────────────────────── -->
+      <div class="nav-bar">
+        <button class="nav-back">
+          <!-- Back chevron -->
+          <svg width="10" height="17" viewBox="0 0 10 17" fill="none">
+            <path d="M8.5 1.5L1.5 8.5L8.5 15.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#5670B9"/>
+          </svg>
+          <span style="color:#5670B9; font-size:17px;">Events</span>
+        </button>
+        <span class="nav-title">Event Details</span>
+        <!-- Add to Calendar -->
+        <button class="nav-action" title="Add to Calendar">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <path d="M4 8h14M8 4v2M14 4v2M5 4h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" stroke="#5670B9" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M11 12v4M9 14h4" stroke="#5670B9" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- ── Segmented Toggle (prototype affordance) ── -->
+      <div style="padding: 12px 16px 0; flex-shrink:0;">
+        <p class="proto-label">Toggle event type</p>
+        <div class="prototype-toggle" style="margin-top:6px;">
+          <button class="toggle-btn active" id="btn-allday" onclick="setEventMode('allday')">All Day Event</button>
+          <button class="toggle-btn" id="btn-timed" onclick="setEventMode('timed')">Timed Event</button>
+        </div>
+      </div>
+
+      <!-- ── Scroll Content ─────────────────────────── -->
+      <div class="scroll-content">
+
+        <!-- ─ BMDetailHeaderView (Hero Card) ─ -->
+        <div class="hero-card">
+          <!-- Background gradient (stands in for blurred image) -->
+          <div class="hero-bg"></div>
+          <div class="hero-bg-pattern"></div>
+
+          <!-- Material overlay card -->
+          <div class="hero-overlay">
+
+            <!-- Thumbnail image (130×130 equivalent) -->
+            <div class="event-thumbnail">
+              <div class="thumbnail-inner">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                  <rect x="4" y="6" width="32" height="28" rx="4" stroke="white" stroke-width="2"/>
+                  <path d="M4 14h32" stroke="white" stroke-width="2"/>
+                  <path d="M13 4v4M27 4v4" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                  <rect x="10" y="20" width="6" height="6" rx="1" fill="white" opacity="0.7"/>
+                  <rect x="20" y="20" width="6" height="6" rx="1" fill="white" opacity="0.7"/>
+                </svg>
+                <span style="color:white; font-size:9px; font-weight:600; opacity:0.8;">CAL</span>
+              </div>
+            </div>
+
+            <!-- Event name — BMFont.bold(20) -->
+            <div class="event-name">Exhibit | A Storied Campus: Cal in Fiction</div>
+
+            <!-- Date row — calendar icon + date string -->
+            <div class="detail-row">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <rect x="1" y="2.5" width="14" height="12" rx="2.5" stroke="currentColor" stroke-width="1.4" style="color:var(--color-muted)"/>
+                <path d="M1 6.5h14" stroke="currentColor" stroke-width="1.4" style="color:var(--color-muted)"/>
+                <path d="M5 1v3M11 1v3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" style="color:var(--color-muted)"/>
+                <rect x="4" y="9" width="2.5" height="2.5" rx="0.5" fill="currentColor" style="color:var(--color-muted)"/>
+                <rect x="8.75" y="9" width="2.5" height="2.5" rx="0.5" fill="currentColor" style="color:var(--color-muted)"/>
+              </svg>
+              <span class="detail-row-text">Today</span>
+            </div>
+
+            <!-- Time row — KEY ELEMENT: toggles between All Day badge and time text -->
+            <div class="detail-row" id="time-row">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4" style="color:var(--color-muted)"/>
+                <path d="M8 4.5V8L10.5 10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="color:var(--color-muted)"/>
+              </svg>
+              <!-- All Day badge (visible when allday mode) -->
+              <div class="time-row-content" id="time-allday">
+                <div class="all-day-badge">
+                  <span class="all-day-badge-text">All Day</span>
+                </div>
+              </div>
+              <!-- Time text (visible when timed mode) -->
+              <div class="time-row-content" id="time-timed" style="display:none;">
+                <span class="detail-row-text">10:00 AM – 4:00 PM</span>
+              </div>
+            </div>
+
+            <!-- Location row -->
+            <div class="detail-row">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M8 1.5C5.51 1.5 3.5 3.51 3.5 6c0 3.5 4.5 8.5 4.5 8.5s4.5-5 4.5-8.5c0-2.49-2.01-4.5-4.5-4.5z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="color:var(--color-muted)"/>
+                <circle cx="8" cy="6" r="1.5" fill="currentColor" style="color:var(--color-muted)"/>
+              </svg>
+              <span class="detail-row-text">The Rowell Exhibition Cases, Doe Library, 2nd floor</span>
+            </div>
+
+          </div><!-- /hero-overlay -->
+        </div><!-- /hero-card -->
+
+        <!-- ─ BMDetailDescriptionView ─ -->
+        <div class="description-card">
+          <span class="description-title">Description</span>
+          <p class="description-body">
+            Mention of the name University of California, Berkeley, evokes a range of images:
+            a celebrated institution, a seat of innovation, protests and activism, iconic architecture,
+            colorful traditions, and … literary muse? The campus has long sparked the creativity of
+            fiction writers, inspiring them to use it as a backdrop, a key player, or a barely disguised
+            character within their tales. This exhibition highlights examples of these portrayals through
+            book covers, excerpts, illustrations, photographs, and other materials largely selected from
+            the University Archives and general collections of The Bancroft Library.
+          </p>
+        </div>
+
+        <!-- ─ Action Buttons ─ -->
+        <div class="action-buttons">
+          <button class="bm-action-btn">Learn More</button>
+        </div>
+
+        <!-- bottom padding -->
+        <div style="height: 12px; flex-shrink:0;"></div>
+
+      </div><!-- /scroll-content -->
+
+      <!-- ── Home Indicator ─────────────────────────── -->
+      <div class="home-indicator-area">
+        <div class="home-indicator"></div>
+      </div>
+
+    </div><!-- /screen-area -->
+  </div><!-- /iphone-frame -->
+
+  <script src="app.js"></script>
+</body>
+</html>
