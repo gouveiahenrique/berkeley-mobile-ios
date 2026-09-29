@@ -1,0 +1,36 @@
+# Code Conventions
+
+## Naming Conventions
+
+- **`BM` prefix**: Types tied to core/domain concepts are prefixed `BM` (Berkeley Mobile), e.g. `BMColor`, `BMConstants`, `BMNetworkingManager`, `BMLocationManager`, `BMError`, `BMEventManager`, `BMGym`, `BMLibrary`, `BMDiningLocation` (`BMDiningLocation.swift`), `BMEventCalendarEntry`, `BMSafetyLog`, `BMResourceCategory`, `BMAlert`, `BMActionButton`, `BMCachedAsyncImageView`, `BMDrawerView`, `BMFilterButton`, `BMSegmentedControlView`, `BMContentUnavailableView`, `BMTopBlobView`. Direct repository observation: 20 files under `berkeley-mobile/` match the `BM*.swift` naming pattern.
+- **`<Feature>ViewModel` suffix**: SwiftUI/Combine-style view models are suffixed `ViewModel`, e.g. `HomeViewModel`, `EventsViewModel`, `SafetyViewModel`, `ResourcesViewModel`, `GuidesViewModel`, `GymOccupancyViewModel`, `DiningHallsViewModel`, `DebugViewModel`, `FeedbackFormViewModel`, `CalendarViewModel`, `HomeDrawerPinViewModel`, `NewsDataViewModel`. Direct count: 13 files matching `*ViewModel.swift`.
+- **`<Feature>View` / `<Feature>ViewController` suffix**: SwiftUI views are suffixed `View` (e.g. `TodayView`, `SafetyView`, `ResourcesView`, `EventsView`, `CalendarView`, `CardView`); UIKit view controllers are suffixed `ViewController` (e.g. `MapViewController`, `LibraryDetailViewController`, `GymDetailViewController`, `DrawerViewController`, `SearchDrawerViewController`). Direct count: 64 files matching `*View.swift`/`*ViewController.swift`.
+- **`<Feature>DataSource` folders and types**: Firestore-backed fetchers implementing the `DataSource` protocol live in a `<Feature>DataSource/` subfolder and are named `<Feature>DataSource` (e.g. `GymDataSource`, `LibraryDataSource`, `MapDataSource`, `GymClassDataSource`).
+- **Type extension files**: Extensions on Foundation/UIKit types are named `<Type>+Extension.swift` or `<Type>+Extensions.swift` or `<Type>+Ext.swift` (all three suffix variants are used — e.g. `Date+Extension.swift`, `UIView+Extensions.swift`, `Logger+Ext.swift`). Not found in codebase: a single consistently-enforced suffix.
+- **Constants**: File-scoped fetch endpoint names use a `fileprivate let k<Name>Endpoint` convention (e.g. `fileprivate let kGymsEndpoint = "Gyms"` in `GymDataSource.swift`), while app-wide constants are grouped as static members of `BMConstants` (`berkeley-mobile/Data/BMConstants.swift`).
+- **`UserDefaults` keys**: Centralized in a single `enum UserDefaultsKeys: String` (`berkeley-mobile/Utils/UserDefaults+Extension.swift:11-18`) rather than scattered string literals, accessed through typed `UserDefaults` extension methods (`set(_:forKey: UserDefaultsKeys)`, `integer(forKey:)`, `data(forKey:)`, `increment(forKey:)`).
+
+## File Organization
+
+- One primary type per file, with the filename matching the type name (direct observation across inspected files, e.g. `BMEventCalendarEntry.swift` defines `class BMEventCalendarEntry`).
+- Related small types are occasionally co-located in the same file as the primary type they support, marked with `// MARK: - <Name>` section comments (e.g. `berkeley-mobile/Events/CalendarView.swift` defines `CalendarViewModel`, `CalendarView`, and `CalendarEntryButton` in one file, separated by `// MARK: -` comments). Direct count: 44 files use `// MARK: -` section comments.
+- Feature folders separate concerns into `<Feature>DataSource/` (data fetch + parsing), `<Feature>ViewModel.swift` (state/business logic), and one or more view files — observed consistently across `Home/Fitness/`, `Home/Libraries/`, `Home/Map/`, `Home/Dining/`, `Events/`.
+- File header comments follow a standard Xcode template: filename, project name, author, and copyright line (e.g. `// BMConstants.swift`, `// berkeley-mobile`, `// Created by Justin Wong on 3/15/25.`, `// Copyright © 2025 ASUC OCTO. All rights reserved.`). This pattern recurs across all inspected files.
+
+## Architectural Patterns
+
+- **Dependency injection via FactoryKit**: `berkeley-mobile/BerkeleyMobile+Injection.swift` defines an `extension Container` registering each shared view model as a `Factory<T>` with an explicit scope — `.shared` (e.g. `calendarViewModel`, `eventsViewModel`, `homeDrawerPinViewModel`) or `.singleton` (e.g. `diningHallsViewModel`, `guidesViewModel`, `gymOccupancyViewModel`, `homeViewModel`). Consumers access these via `@Injected(\.<name>)` (class contexts, e.g. `TabBarController.swift:15`) or `@InjectedObject(\.<name>)` (SwiftUI views, e.g. `CalendarView.swift:63`).
+- **Protocol-oriented model composition**: Domain models compose behavior by conforming to multiple small protocols defined in `berkeley-mobile/Data/ItemProtocols/` rather than through class inheritance (e.g. `BMGym: HomeDrawerSectionRowItemType, CanFavorite, HasPhoneNumber, HasOpenTimes`).
+- **Singleton managers**: Core services are exposed as singletons via `static let shared` (e.g. `DataManager.shared`, `BMNetworkingManager.shared`, `BMLocationManager.shared`), used from both `AppDelegate` and `SceneDelegate` lifecycle callbacks.
+- **Mixed concurrency styles**: The codebase contains both completion-handler-based asynchronous code (`DataSource.fetchItems(_:)`, `ImageLoader.getImage(url:completion:)`) and Swift `async`/`await` code (`BMNetworkingManager`'s `async throws` methods, `NewsDataViewModel.fetchNewsArticles() async -> [NewsArticle]` marked `@concurrent`). Newer files (per header comment dates, e.g. `BMNetworkingManager.swift` created 5/15/25, `NewsDataViewModel.swift` created 4/6/26) use `async`/`await`; older files (e.g. `GymDataSource.swift` created 12/5/19) use completion handlers. This is a direct chronological observation from file header comments, not a stated project policy.
+- **UIKit/SwiftUI interop via `UIHostingController`**: SwiftUI screens are embedded into the UIKit tab bar root via `UIHostingController(rootView:)` (`TabBarController.swift:17-20`).
+- **Custom drawer/bottom-sheet system**: `berkeley-mobile/Drawer/` implements a stack-based drawer presentation system (`MainDrawerViewDelegate`'s `drawerStack`, `moveCurrentDrawer(to:)`, `dismissTop(showNext:)`, `coverTop(newTop:newState:)`) as a `protocol extension` mixed into `UIViewController` subtypes, rather than using a third-party bottom-sheet library.
+- **Logging**: Newer code centralizes `os.Logger` instances as static members of an `extension Logger` (`berkeley-mobile/Utils/Logger+Ext.swift`), one per view model, categorized by `String(describing: <Type>.self)`. Older code uses `print("[Error @ <Type>.<method>()]: \(err)")`-style string logging (e.g. `GymDataSource.swift:23`). Both patterns are present in the current codebase; not found in codebase evidence that the older pattern has been fully migrated away.
+
+## Property Wrappers
+
+- `@Display` (`berkeley-mobile/Data/PropertyWrappers/Display.swift`) — a custom property wrapper for `String`/`String?` fields that trims whitespace/newlines and strips a specific invalid replacement-character glyph on every set, applied to display-facing model fields (e.g. `BMGym.address`, `BMGym.phoneNumber`, `BMEventCalendarEntry.name`).
+
+## Not Found in Codebase
+
+A dedicated linter configuration (e.g. `.swiftlint.yml`) was searched for and not found in the repository, so no enforced/automated style rules beyond the conventions observed above can be documented.
