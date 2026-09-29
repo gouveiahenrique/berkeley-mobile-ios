@@ -1,0 +1,441 @@
+/* ============================================================
+   DESIGN TOKENS — extracted from BMColor / BMFont via CodeGraph
+   ============================================================ */
+:root {
+  /* Extracted from BMColor.ActionButton.background */
+  --app-accent:        #779AFC;
+  /* Extracted from BMColor.actionButton.color */
+  --app-accent-text:   #FEFEFE;
+  /* Extracted from BMColor.ActionButton.highlighted */
+  --app-accent-dark:   #607DCC;
+  /* Extracted from BMColor.modalBackground (light) */
+  --color-bg:          #FAFAFA;
+  /* Extracted from BMColor.cardBackground (light) */
+  --color-surface:     #FFFFFF;
+  /* Extracted from BMColor.Calendar.blackText (light) */
+  --color-label:       #2C2C2D;
+  /* Secondary text */
+  --color-muted:       #626162;
+  /* Separator */
+  --color-border:      rgba(60,60,67,0.29);
+  /* Extracted from BMColor.selectedButtonBackground */
+  --color-salmon:      #FB9B8E;
+  /* Extracted from BMColor.eventAcademic */
+  --color-academic:    #7297E6;
+  /* Extracted from BMColor.Calendar.dayOfWeekHeader */
+  --color-cal-header:  #5670B9;
+  /* Radius from CardView.layoutSubviews */
+  --radius-base:       12px;
+  --radius-card:       12px;
+  --radius-capsule:    100px;
+  /* Spacing */
+  --spacing:           16px;
+  /* Font — Apercu with system-ui fallback */
+  --font:              'Apercu', -apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif;
+
+  /* iOS system */
+  --ios-blue:          #007AFF;
+  --ios-green:         #34C759;
+  --ios-red:           #FF3B30;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg:          #414141;
+    --color-surface:     #484747;
+    --color-label:       #FAFAFA;
+    --color-muted:       rgba(235,235,245,0.6);
+    --color-border:      rgba(84,84,88,0.65);
+  }
+}
+
+/* ============================================================
+   RESET + BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #1a1a2e;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================================
+   IPHONE 15 PRO FRAME
+   ============================================================ */
+.iphone-frame {
+  width: 393px;
+  height: 852px;
+  background: #000;
+  border-radius: 55px;
+  box-shadow:
+    0 0 0 2px #3a3a3c,
+    0 0 0 6px #1c1c1e,
+    0 40px 80px rgba(0,0,0,0.6);
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.dynamic-island {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 34px;
+  background: #000;
+  border-radius: 20px;
+  z-index: 100;
+}
+
+.screen-area {
+  position: absolute;
+  inset: 0;
+  border-radius: 55px;
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+/* ============================================================
+   SCREEN PANELS
+   ============================================================ */
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 300ms ease, opacity 300ms ease;
+  background: var(--color-bg);
+}
+
+.screen.active {
+  transform: translateX(0);
+  opacity: 1;
+  pointer-events: all;
+}
+
+.screen.exiting {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+/* ============================================================
+   STATUS BAR
+   ============================================================ */
+.status-bar {
+  height: 54px;
+  display: flex;
+  align-items: flex-end;
+  padding: 0 24px 8px;
+  justify-content: space-between;
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.status-bar .time {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-label);
+  letter-spacing: -0.3px;
+}
+
+.status-bar .icons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ============================================================
+   NAVIGATION BAR
+   ============================================================ */
+.nav-bar {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  flex-shrink: 0;
+  position: relative;
+  background: var(--color-bg);
+  border-bottom: 0.5px solid var(--color-border);
+}
+
+.nav-bar .nav-back {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--app-accent);
+  font-size: 17px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-family: var(--font);
+}
+
+.nav-bar .nav-back svg { flex-shrink: 0; }
+
+.nav-bar .nav-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--color-label);
+  white-space: nowrap;
+}
+
+.nav-bar .nav-action {
+  margin-left: auto;
+  color: var(--app-accent);
+  font-size: 22px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+}
+
+/* ============================================================
+   HOME INDICATOR
+   ============================================================ */
+.home-indicator {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 134px;
+  height: 5px;
+  background: var(--color-label);
+  border-radius: 3px;
+  opacity: 0.2;
+  z-index: 50;
+}
+
+/* ============================================================
+   SCROLLABLE CONTENT
+   ============================================================ */
+.scroll-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 34px;
+}
+.scroll-content::-webkit-scrollbar { display: none; }
+
+/* ============================================================
+   EVENT DETAIL HEADER CARD
+   ============================================================ */
+.event-header-card {
+  margin: 20px 16px 0;
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  position: relative;
+  background: rgba(255,255,255,0.85);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+}
+
+@media (prefers-color-scheme: dark) {
+  .event-header-card {
+    background: rgba(72,71,71,0.92);
+  }
+}
+
+.event-header-bg {
+  width: 100%;
+  height: 280px;
+  background: linear-gradient(135deg, #7297E6 0%, #779AFC 50%, #9B8EE0 100%);
+  position: relative;
+}
+
+.event-header-bg-blur {
+  position: absolute;
+  inset: 0;
+  background: inherit;
+  filter: blur(0px);
+}
+
+/* Frosted overlay */
+.event-header-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(250,250,250,0.82);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-radius: var(--radius-card);
+  padding: 14px 16px 16px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .event-header-content {
+    background: rgba(50,50,55,0.85);
+  }
+}
+
+.event-thumb {
+  width: 80px;
+  height: 80px;
+  border-radius: 10px;
+  margin: 0 auto 10px;
+  display: block;
+  background: linear-gradient(135deg, #7297E6 0%, #779AFC 100%);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 28px;
+}
+
+.event-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-label);
+  line-height: 1.25;
+  margin-bottom: 8px;
+}
+
+.event-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--color-label);
+}
+
+.event-meta-row svg {
+  flex-shrink: 0;
+  color: var(--color-muted);
+}
+
+/* ============================================================
+   ALL DAY CAPSULE — the fix
+   ============================================================ */
+.all-day-capsule {
+  display: inline-flex;
+  align-items: center;
+  background: var(--app-accent);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: var(--radius-capsule);
+  letter-spacing: 0.2px;
+  line-height: 1.6;
+}
+
+/* Bug state (for comparison toggle) */
+.time-text-bug {
+  font-size: 12px;
+  color: var(--color-label);
+}
+
+/* ============================================================
+   DESCRIPTION CARD
+   ============================================================ */
+.description-card {
+  margin: 14px 16px 0;
+  background: var(--color-surface);
+  border-radius: var(--radius-card);
+  padding: 16px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.10);
+}
+
+.description-card .section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-label);
+  margin-bottom: 8px;
+}
+
+.description-card .section-body {
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--color-muted);
+  line-height: 1.6;
+}
+
+/* ============================================================
+   ACTION BUTTONS
+   ============================================================ */
+.action-buttons {
+  margin: 16px 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.bm-action-btn {
+  background: var(--app-accent);
+  color: var(--app-accent-text);
+  border: none;
+  border-radius: 10px;
+  height: 48px;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.bm-action-btn:active {
+  background: var(--app-accent-dark);
+  transform: scale(0.98);
+}
+
+/* ============================================================
+   COMPARISON TOGGLE
+   ============================================================ */
+.toggle-bar {
+  margin: 14px 16px 0;
+  display: flex;
+  background: rgba(120,120,128,0.12);
+  border-radius: 10px;
+  padding: 3px;
+}
+
+.toggle-option {
+  flex: 1;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-muted);
+  padding: 6px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.toggle-option.active {
+  background: var(--color-surface);
+  color: var(--color-label);
+  font-weight: 600;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+}
+
+/* ============================================================
+   TYPE SCALE
+   ============================================================ */
+.ios-large-title { font-size: 34px; font-weight: 700; letter-spacing: 0.37px; }
+.ios-title-1     { font-size: 28px; font-weight: 700; }
+.ios-title-2     { font-size: 22px; font-weight: 700; }
+.ios-title-3     { font-size: 20px; font-weight: 600; }
+.ios-headline    { font-size: 17px; font-weight: 600; letter-spacing: -0.41px; }
+.ios-body        { font-size: 17px; font-weight: 400; letter-spacing: -0.41px; }
+.ios-callout     { font-size: 16px; font-weight: 400; }
+.ios-subheadline { font-size: 15px; font-weight: 400; }
+.ios-footnote    { font-size: 13px; font-weight: 400; }
+.ios-caption-1   { font-size: 12px; font-weight: 400; }

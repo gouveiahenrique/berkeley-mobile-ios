@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ASDLC-553 — All Day Event Detail Prototype</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="iphone-frame">
+    <div class="dynamic-island"></div>
+    <div class="screen-area">
+
+      <!-- ================================================
+           SCREEN: Event Detail (All Day Event)
+           ================================================ -->
+      <div id="screen-event-detail" class="screen active">
+
+        <!-- Status Bar -->
+        <div class="status-bar">
+          <span class="time">9:41</span>
+          <div class="icons">
+            <!-- Signal bars -->
+            <svg width="17" height="12" viewBox="0 0 17 12" fill="none">
+              <rect x="0" y="7" width="3" height="5" rx="1" fill="currentColor" opacity="0.4"/>
+              <rect x="4.5" y="5" width="3" height="7" rx="1" fill="currentColor" opacity="0.6"/>
+              <rect x="9" y="2.5" width="3" height="9.5" rx="1" fill="currentColor" opacity="0.8"/>
+              <rect x="13.5" y="0" width="3" height="12" rx="1" fill="currentColor"/>
+            </svg>
+            <!-- Wi-Fi -->
+            <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor">
+              <path d="M8 9.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z"/>
+              <path d="M8 6.5C6.07 6.5 4.33 7.3 3.05 8.6L4.5 10.05C5.41 9.12 6.64 8.55 8 8.55s2.59.57 3.5 1.5L12.95 8.6C11.67 7.3 9.93 6.5 8 6.5z" opacity="0.7"/>
+              <path d="M8 3.5C5.1 3.5 2.5 4.7.65 6.65L2.1 8.1C3.6 6.53 5.69 5.55 8 5.55s4.4.98 5.9 2.55l1.45-1.45C13.5 4.7 10.9 3.5 8 3.5z" opacity="0.4"/>
+            </svg>
+            <!-- Battery -->
+            <svg width="25" height="12" viewBox="0 0 25 12" fill="none">
+              <rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="currentColor" stroke-opacity="0.35"/>
+              <rect x="2" y="2" width="16" height="8" rx="2" fill="currentColor"/>
+              <path d="M23 4v4a2 2 0 000-4z" fill="currentColor" fill-opacity="0.4"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Navigation Bar -->
+        <div class="nav-bar">
+          <button class="nav-back" onclick="showToast('Navigate back to Events list', 'info')">
+            <svg width="10" height="17" viewBox="0 0 10 17" fill="none">
+              <path d="M9 1L1 8.5L9 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Events
+          </button>
+          <button class="nav-action" onclick="showToast('Add to Calendar', 'success')" title="Add to Calendar">
+            <!-- calendar.badge.plus -->
+            <svg width="24" height="22" viewBox="0 0 24 22" fill="none">
+              <rect x="2" y="3" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M2 8h18" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M7 1v3M15 1v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="19" cy="17" r="5" fill="#FAFAFA"/>
+              <path d="M19 14.5v5M16.5 17h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Scrollable body -->
+        <div class="scroll-content">
+
+          <!-- Comparison toggle -->
+          <div class="toggle-bar">
+            <div class="toggle-option active" id="toggle-fix" onclick="setMode('fix')">Fixed (All Day)</div>
+            <div class="toggle-option" id="toggle-bug" onclick="setMode('bug')">Bug (12:00 AM)</div>
+          </div>
+
+          <!-- Event Header Card -->
+          <div class="event-header-card">
+            <!-- Background image / gradient -->
+            <div class="event-header-bg">
+              <!-- Subtle event-colour pattern -->
+              <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="opacity:0.35">
+                <defs>
+                  <radialGradient id="g1" cx="30%" cy="40%" r="60%">
+                    <stop offset="0%" stop-color="#fff" stop-opacity="0.5"/>
+                    <stop offset="100%" stop-color="#7297E6" stop-opacity="0"/>
+                  </radialGradient>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#g1)"/>
+              </svg>
+            </div>
+
+            <!-- Frosted content overlay -->
+            <div class="event-header-content">
+              <!-- Thumbnail -->
+              <div class="event-thumb" style="margin: 0 auto 10px; width:80px; height:80px; border-radius:10px; background:linear-gradient(135deg,#7297E6,#779AFC); display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 14px rgba(0,0,0,0.22);">
+                <!-- Calendar icon -->
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+                  <rect x="3" y="4" width="18" height="17" rx="3" fill="white" fill-opacity="0.3"/>
+                  <path d="M3 9h18" stroke="white" stroke-width="1.5"/>
+                  <path d="M8 2v3M16 2v3" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+                  <rect x="6" y="12" width="3" height="3" rx="0.5" fill="white" fill-opacity="0.7"/>
+                  <rect x="10.5" y="12" width="3" height="3" rx="0.5" fill="white" fill-opacity="0.7"/>
+                  <rect x="15" y="12" width="3" height="3" rx="0.5" fill="white" fill-opacity="0.7"/>
+                  <rect x="6" y="17" width="3" height="2" rx="0.5" fill="white" fill-opacity="0.7"/>
+                  <rect x="10.5" y="17" width="3" height="2" rx="0.5" fill="white" fill-opacity="0.7"/>
+                </svg>
+              </div>
+
+              <!-- Event Name -->
+              <div class="event-name">Cal Day Open House — Spring Celebration</div>
+
+              <!-- Date row -->
+              <div class="event-meta-row">
+                <!-- calendar icon -->
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" color="#626162">
+                  <rect x="3" y="4" width="18" height="17" rx="3" stroke="currentColor" stroke-width="1.5"/>
+                  <path d="M3 9h18" stroke="currentColor" stroke-width="1.5"/>
+                  <path d="M8 2v3M16 2v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                <span style="font-size:12px;">Today</span>
+              </div>
+
+              <!-- Time row — switches between fix and bug -->
+              <div class="event-meta-row" id="time-row">
+                <!-- clock icon -->
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" color="#626162">
+                  <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/>
+                  <path d="M12 7v5l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <!-- FIX: All Day capsule -->
+                <span class="all-day-capsule" id="time-fix">All Day</span>
+                <!-- BUG: plain time text (hidden by default) -->
+                <span class="time-text-bug" id="time-bug" style="display:none;">12:00 AM</span>
+              </div>
+
+              <!-- Location row -->
+              <div class="event-meta-row">
+                <!-- mappin icon -->
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" color="#626162">
+                  <path d="M12 2C8.69 2 6 4.69 6 8c0 5.25 6 13 6 13s6-7.75 6-13c0-3.31-2.69-6-6-6z" stroke="currentColor" stroke-width="1.5"/>
+                  <circle cx="12" cy="8" r="2.5" stroke="currentColor" stroke-width="1.5"/>
+                </svg>
+                <span style="font-size:12px;">Sproul Plaza, UC Berkeley</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Description Card -->
+          <div class="description-card">
+            <div class="section-title">Description</div>
+            <div class="section-body">
+              Join us for Cal Day, Berkeley's annual open house — a full day of campus tours, department showcases, student performances, and family activities across all of UC Berkeley's colleges and schools. This is an all-day event open to prospective students, families, and the wider campus community.
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="action-buttons">
+            <button class="bm-action-btn" onclick="showToast('Opening event page in Safari…', 'info')">Learn More</button>
+            <button class="bm-action-btn" onclick="showToast('Opening registration page in Safari…', 'info')">Register</button>
+          </div>
+
+        </div><!-- /scroll-content -->
+
+        <!-- Home Indicator -->
+        <div class="home-indicator"></div>
+      </div><!-- /screen-event-detail -->
+
+    </div><!-- /screen-area -->
+  </div><!-- /iphone-frame -->
+
+  <!-- Toast notification -->
+  <div id="toast" style="
+    position: fixed;
+    top: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1C1C1E;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 9999;
+    white-space: nowrap;
+    transition: top 0.3s ease;
+    pointer-events: none;
+  "></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

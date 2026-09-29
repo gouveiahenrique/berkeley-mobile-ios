@@ -152,7 +152,21 @@ struct BMDetailHeaderView: View {
     
     @ViewBuilder
     private var timeView: some View {
-        if let timePart = event.dateString.components(separatedBy: " / ").last {
+        if event.isAllDay == true {
+            HStack {
+                Image(systemName: "clock")
+                    .font(.system(size: 16))
+                Text("All Day")
+                    .font(Font(BMFont.bold(15)))
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 3)
+                    .background(
+                        Capsule()
+                            .fill(.gray.opacity(0.5))
+                    )
+                    .accessibilityLabel("All Day")
+            }
+        } else if let timePart = event.dateString.components(separatedBy: " / ").last {
              EventDetailRow(systemImageName: "clock", text: timePart)
         }
     }
@@ -211,4 +225,15 @@ struct BMDetailDescriptionView: View {
 
 #Preview {
     EventDetailView(event: BMEventCalendarEntry.sampleEntry)
+}
+
+#Preview("All Day Event") {
+    EventDetailView(event: BMEventCalendarEntry(
+        name: "Exhibit | A Storied Campus",
+        date: Date(),
+        end: nil,
+        descriptionText: "An all-day exhibit.",
+        location: "Doe Library",
+        isAllDay: true
+    ))
 }
