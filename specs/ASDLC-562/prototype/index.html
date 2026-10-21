@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ASDLC-562 — All Day Event Indicator</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- Demo controls outside the phone frame -->
+<div class="demo-controls">
+  <p class="demo-label">ASDLC-562 — Event Detail: All Day Indicator</p>
+  <div class="demo-tabs">
+    <button class="demo-tab active" onclick="showDemo('allday')">All Day Event</button>
+    <button class="demo-tab" onclick="showDemo('timed')">Timed Event</button>
+  </div>
+</div>
+
+<!-- iPhone 15 Pro Frame -->
+<div class="iphone-frame">
+  <div class="dynamic-island"></div>
+  <div class="screen-area">
+
+    <!-- Screen: Events List -->
+    <div id="screen-events" class="screen active">
+      <div class="status-bar">
+        <span class="status-time">9:41</span>
+        <div class="status-icons">
+          <svg width="17" height="12" viewBox="0 0 17 12" fill="none">
+            <rect x="0" y="3" width="3" height="9" rx="1" fill="currentColor" opacity="0.35"/>
+            <rect x="4.5" y="2" width="3" height="10" rx="1" fill="currentColor" opacity="0.55"/>
+            <rect x="9" y="0.5" width="3" height="11.5" rx="1" fill="currentColor" opacity="0.75"/>
+            <rect x="13.5" y="0" width="3" height="12" rx="1" fill="currentColor"/>
+          </svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+            <path d="M8 2.4C10.2 2.4 12.2 3.3 13.6 4.8L15.2 3.2C13.3 1.2 10.8 0 8 0C5.2 0 2.7 1.2 0.8 3.2L2.4 4.8C3.8 3.3 5.8 2.4 8 2.4Z" fill="currentColor" opacity="0.35"/>
+            <path d="M8 5.6C9.4 5.6 10.7 6.1 11.7 7L13.3 5.4C11.9 4.1 10 3.2 8 3.2C6 3.2 4.1 4.1 2.7 5.4L4.3 7C5.3 6.1 6.6 5.6 8 5.6Z" fill="currentColor" opacity="0.6"/>
+            <circle cx="8" cy="10" r="2" fill="currentColor"/>
+          </svg>
+          <svg width="25" height="12" viewBox="0 0 25 12" fill="none">
+            <rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="currentColor" opacity="0.35"/>
+            <rect x="2" y="2" width="16" height="8" rx="2" fill="currentColor"/>
+            <path d="M23 4v4a2 2 0 000-4z" fill="currentColor" opacity="0.4"/>
+          </svg>
+        </div>
+      </div>
+      <div class="nav-bar">
+        <span class="nav-title">Events</span>
+      </div>
+
+      <div class="events-list">
+        <div class="events-section-header">
+          <span class="section-date">Thursday, October 22</span>
+          <span class="section-badge">2</span>
+        </div>
+
+        <!-- All-day event row -->
+        <div class="event-row all-day-banner" onclick="pushScreen('screen-detail-allday')">
+          <div class="all-day-row-content">
+            <div class="all-day-dot"></div>
+            <div class="event-row-info">
+              <span class="event-row-name">Fall 2025 Academic Holiday</span>
+              <span class="event-row-location">UC Berkeley Campus</span>
+            </div>
+            <div class="all-day-pill-small">All Day</div>
+          </div>
+        </div>
+
+        <!-- Regular event row -->
+        <div class="event-row timed-event-row" onclick="pushScreen('screen-detail-timed')">
+          <div class="event-time-indicator">
+            <span class="event-time-label">2:00</span>
+            <span class="event-time-ampm">PM</span>
+          </div>
+          <div class="event-row-info">
+            <span class="event-row-name">Exhibit | A Storied Campus: Cal in Fiction</span>
+            <span class="event-row-location">Doe Library, 2nd Floor</span>
+          </div>
+          <svg class="row-chevron" width="8" height="13" viewBox="0 0 8 13" fill="none">
+            <path d="M1 1l6 5.5L1 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen: Event Detail — All Day Event -->
+    <div id="screen-detail-allday" class="screen">
+      <div class="status-bar">
+        <span class="status-time">9:41</span>
+        <div class="status-icons">
+          <svg width="17" height="12" viewBox="0 0 17 12" fill="none">
+            <rect x="0" y="3" width="3" height="9" rx="1" fill="currentColor" opacity="0.35"/>
+            <rect x="4.5" y="2" width="3" height="10" rx="1" fill="currentColor" opacity="0.55"/>
+            <rect x="9" y="0.5" width="3" height="11.5" rx="1" fill="currentColor" opacity="0.75"/>
+            <rect x="13.5" y="0" width="3" height="12" rx="1" fill="currentColor"/>
+          </svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+            <path d="M8 2.4C10.2 2.4 12.2 3.3 13.6 4.8L15.2 3.2C13.3 1.2 10.8 0 8 0C5.2 0 2.7 1.2 0.8 3.2L2.4 4.8C3.8 3.3 5.8 2.4 8 2.4Z" fill="currentColor" opacity="0.35"/>
+            <path d="M8 5.6C9.4 5.6 10.7 6.1 11.7 7L13.3 5.4C11.9 4.1 10 3.2 8 3.2C6 3.2 4.1 4.1 2.7 5.4L4.3 7C5.3 6.1 6.6 5.6 8 5.6Z" fill="currentColor" opacity="0.6"/>
+            <circle cx="8" cy="10" r="2" fill="currentColor"/>
+          </svg>
+          <svg width="25" height="12" viewBox="0 0 25 12" fill="none">
+            <rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="currentColor" opacity="0.35"/>
+            <rect x="2" y="2" width="16" height="8" rx="2" fill="currentColor"/>
+            <path d="M23 4v4a2 2 0 000-4z" fill="currentColor" opacity="0.4"/>
+          </svg>
+        </div>
+      </div>
+      <div class="nav-bar">
+        <button class="nav-back-btn" onclick="popScreen()">
+          <svg width="10" height="17" viewBox="0 0 10 17" fill="none">
+            <path d="M9 1L1.5 8.5L9 16" stroke="var(--app-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="nav-back-label">Events</span>
+        </button>
+        <span class="nav-title">Event Detail</span>
+        <button class="nav-action-btn" title="Add to Calendar">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <rect x="1" y="3" width="20" height="18" rx="3" stroke="var(--app-accent)" stroke-width="1.5"/>
+            <path d="M1 8h20" stroke="var(--app-accent)" stroke-width="1.5"/>
+            <path d="M6 1v4M16 1v4" stroke="var(--app-accent)" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="16" cy="16" r="5" fill="var(--color-bg)" stroke="var(--app-accent)" stroke-width="1.3"/>
+            <path d="M16 13.5v5M13.5 16h5" stroke="var(--app-accent)" stroke-width="1.3" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="screen-scroll">
+        <!-- Hero card -->
+        <div class="detail-hero-card shadowfy">
+          <div class="hero-image-bg">
+            <div class="hero-image-placeholder">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                <path d="M3 9h18M9 21V9M3 3h18v18H3zM15 3v18" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+          <div class="hero-overlay">
+            <div class="hero-thumb-wrap">
+              <div class="hero-thumb">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
+                  <rect x="3" y="3" width="18" height="18" rx="3" stroke="rgba(255,255,255,0.6)" stroke-width="1.5"/>
+                  <path d="M3 9h18M9 3v18" stroke="rgba(255,255,255,0.6)" stroke-width="1.5"/>
+                </svg>
+              </div>
+            </div>
+
+            <div class="hero-event-name">Fall 2025 Academic Holiday</div>
+
+            <div class="hero-meta">
+              <!-- Date row -->
+              <div class="detail-row">
+                <svg class="detail-row-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <rect x="1" y="2" width="14" height="13" rx="2" stroke="currentColor" stroke-width="1.2"/>
+                  <path d="M1 6h14" stroke="currentColor" stroke-width="1.2"/>
+                  <path d="M5 1v2M11 1v2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                </svg>
+                <span class="detail-row-text">Thursday, October 22</span>
+              </div>
+
+              <!-- Time row: ALL DAY CAPSULE — this is the new behavior -->
+              <div class="detail-row">
+                <svg class="detail-row-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.2"/>
+                  <path d="M8 4.5V8l2.5 2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <!-- ALL DAY CAPSULE — replaces time text for all-day events -->
+                <span class="all-day-capsule">All Day</span>
+              </div>
+
+              <!-- Location row -->
+              <div class="detail-row">
+                <svg class="detail-row-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M8 1C5.8 1 4 2.8 4 5c0 3.5 4 10 4 10s4-6.5 4-10c0-2.2-1.8-4-4-4z" stroke="currentColor" stroke-width="1.2"/>
+                  <circle cx="8" cy="5" r="1.5" stroke="currentColor" stroke-width="1.2"/>
+                </svg>
+                <span class="detail-row-text">UC Berkeley Campus</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Description card -->
+        <div class="description-card shadowfy">
+          <div class="description-title">Description</div>
+          <div class="description-body">
+            UC Berkeley observes the Fall 2025 Academic Holiday. All campus administrative offices will be closed, and no classes are scheduled. Students are encouraged to rest and enjoy the break.
+          </div>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="action-buttons">
+          <button class="action-btn" onclick="showToast('Opening event page in Safari…', 'info')">Learn More</button>
+        </div>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+
+    <!-- Screen: Event Detail — Timed Event -->
+    <div id="screen-detail-timed" class="screen">
+      <div class="status-bar">
+        <span class="status-time">9:41</span>
+        <div class="status-icons">
+          <svg width="17" height="12" viewBox="0 0 17 12" fill="none">
+            <rect x="0" y="3" width="3" height="9" rx="1" fill="currentColor" opacity="0.35"/>
+            <rect x="4.5" y="2" width="3" height="10" rx="1" fill="currentColor" opacity="0.55"/>
+            <rect x="9" y="0.5" width="3" height="11.5" rx="1" fill="currentColor" opacity="0.75"/>
+            <rect x="13.5" y="0" width="3" height="12" rx="1" fill="currentColor"/>
+          </svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+            <path d="M8 2.4C10.2 2.4 12.2 3.3 13.6 4.8L15.2 3.2C13.3 1.2 10.8 0 8 0C5.2 0 2.7 1.2 0.8 3.2L2.4 4.8C3.8 3.3 5.8 2.4 8 2.4Z" fill="currentColor" opacity="0.35"/>
+            <path d="M8 5.6C9.4 5.6 10.7 6.1 11.7 7L13.3 5.4C11.9 4.1 10 3.2 8 3.2C6 3.2 4.1 4.1 2.7 5.4L4.3 7C5.3 6.1 6.6 5.6 8 5.6Z" fill="currentColor" opacity="0.6"/>
+            <circle cx="8" cy="10" r="2" fill="currentColor"/>
+          </svg>
+          <svg width="25" height="12" viewBox="0 0 25 12" fill="none">
+            <rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="currentColor" opacity="0.35"/>
+            <rect x="2" y="2" width="16" height="8" rx="2" fill="currentColor"/>
+            <path d="M23 4v4a2 2 0 000-4z" fill="currentColor" opacity="0.4"/>
+          </svg>
+        </div>
+      </div>
+      <div class="nav-bar">
+        <button class="nav-back-btn" onclick="popScreen()">
+          <svg width="10" height="17" viewBox="0 0 10 17" fill="none">
+            <path d="M9 1L1.5 8.5L9 16" stroke="var(--app-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="nav-back-label">Events</span>
+        </button>
+        <span class="nav-title">Event Detail</span>
+        <button class="nav-action-btn" title="Add to Calendar">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <rect x="1" y="3" width="20" height="18" rx="3" stroke="var(--app-accent)" stroke-width="1.5"/>
+            <path d="M1 8h20" stroke="var(--app-accent)" stroke-width="1.5"/>
+            <path d="M6 1v4M16 1v4" stroke="var(--app-accent)" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="16" cy="16" r="5" fill="var(--color-bg)" stroke="var(--app-accent)" stroke-width="1.3"/>
+            <path d="M16 13.5v5M13.5 16h5" stroke="var(--app-accent)" stroke-width="1.3" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="screen-scroll">
+        <!-- Hero card -->
+        <div class="detail-hero-card shadowfy">
+          <div class="hero-image-bg hero-image-bg--exhibit">
+            <div class="hero-image-placeholder">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                <rect x="3" y="3" width="18" height="13" rx="2" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+                <path d="M3 13l4-4 3 3 3-4 5 5" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+          <div class="hero-overlay">
+            <div class="hero-thumb-wrap">
+              <div class="hero-thumb hero-thumb--exhibit">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
+                  <rect x="3" y="3" width="18" height="13" rx="2" stroke="rgba(255,255,255,0.6)" stroke-width="1.5"/>
+                  <path d="M3 13l4-4 3 3 3-4 5 5" stroke="rgba(255,255,255,0.6)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+
+            <div class="hero-event-name">Exhibit | A Storied Campus: Cal in Fiction</div>
+
+            <div class="hero-meta">
+              <!-- Date row -->
+              <div class="detail-row">
+                <svg class="detail-row-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <rect x="1" y="2" width="14" height="13" rx="2" stroke="currentColor" stroke-width="1.2"/>
+                  <path d="M1 6h14" stroke="currentColor" stroke-width="1.2"/>
+                  <path d="M5 1v2M11 1v2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                </svg>
+                <span class="detail-row-text">Thursday, October 22</span>
+              </div>
+
+              <!-- Time row: shows actual time (not all-day) — current/correct behavior for timed events -->
+              <div class="detail-row">
+                <svg class="detail-row-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.2"/>
+                  <path d="M8 4.5V8l2.5 2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="detail-row-text">2:00 PM – 4:30 PM</span>
+              </div>
+
+              <!-- Location row -->
+              <div class="detail-row">
+                <svg class="detail-row-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M8 1C5.8 1 4 2.8 4 5c0 3.5 4 10 4 10s4-6.5 4-10c0-2.2-1.8-4-4-4z" stroke="currentColor" stroke-width="1.2"/>
+                  <circle cx="8" cy="5" r="1.5" stroke="currentColor" stroke-width="1.2"/>
+                </svg>
+                <span class="detail-row-text">The Rowell Exhibition Cases, Doe Library, 2nd floor</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Description card -->
+        <div class="description-card shadowfy">
+          <div class="description-title">Description</div>
+          <div class="description-body">
+            Mention of the name University of California, Berkeley, evokes a range of images: a celebrated institution, a seat of innovation, protests and activism, iconic architecture, colorful traditions, and … literary muse? The campus has long sparked the creativity of fiction writers, inspiring them to use it as a backdrop, a key player, or a barely disguised character within their tales.
+          </div>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="action-buttons">
+          <button class="action-btn" onclick="showToast('Opening event page in Safari…', 'info')">Learn More</button>
+          <button class="action-btn" onclick="showToast('Opening registration page in Safari…', 'info')">Register</button>
+        </div>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+
+  </div><!-- /.screen-area -->
+</div><!-- /.iphone-frame -->
+
+<!-- Toast -->
+<div id="toast" class="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

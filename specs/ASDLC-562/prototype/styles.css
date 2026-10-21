@@ -1,0 +1,628 @@
+/* =====================================================
+   DESIGN TOKENS — extracted from codebase via CodeGraph
+   ===================================================== */
+:root {
+  /* App accent: BMColor.ActionButton.background (Colors+ActionButton.swift) */
+  --app-accent:        #779AFC;
+  /* Modal/page background: BMColor.modalBackground light (Colors.swift) */
+  --color-bg:          #FAFAFA;
+  /* Card background: BMColor.cardBackground light (Colors.swift) */
+  --color-surface:     #FFFFFF;
+  /* Primary text: BMColor.Calendar.blackText light (Colors+Calendar.swift) */
+  --color-label:       #2C2C2D;
+  /* Secondary text: BMColor.Calendar.grayedText light (Colors+Calendar.swift) */
+  --color-muted:       #626162;
+  /* iOS separator */
+  --color-border:      rgba(60,60,67,0.29);
+  --color-error:       #FF3B30;
+  --color-success:     #34C759;
+  /* Event academic color: BMColor.eventAcademic (Colors+Event.swift) */
+  --color-event-academic: #7297E6;
+  /* Corner radius from clipShape(RoundedRectangle(cornerRadius:)) in EventDetailView */
+  --radius-base:       12px;
+  --radius-inner:      10px;
+  --spacing-unit:      16px;
+  /* Font: Apercu (from Fonts.swift) — falls back to system-ui */
+  --font-family:       'Apercu', -apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif;
+
+  /* iOS system colors */
+  --ios-blue:   #007AFF;
+  --ios-green:  #34C759;
+  --ios-red:    #FF3B30;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* BMColor.modalBackground dark: RGB(65,65,65) */
+    --color-bg:      #414141;
+    /* BMColor.cardBackground dark: RGB(72,71,71) */
+    --color-surface: #484747;
+    /* BMColor.Calendar.blackText dark: RGB(250,250,250) */
+    --color-label:   #FAFAFA;
+    /* BMColor.Calendar.grayedText dark: RGB(170,170,170) */
+    --color-muted:   #AAAAAA;
+    --color-border:  rgba(84,84,88,0.65);
+  }
+}
+
+/* =====================================================
+   BASE RESET
+   ===================================================== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #1a1a2e;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-family: var(--font-family);
+  gap: 24px;
+  padding: 24px 0 40px;
+}
+
+/* =====================================================
+   DEMO CONTROLS (outside frame)
+   ===================================================== */
+.demo-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.demo-label {
+  color: rgba(255,255,255,0.55);
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  font-family: var(--font-family);
+  text-transform: uppercase;
+}
+
+.demo-tabs {
+  display: flex;
+  gap: 8px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 4px;
+}
+
+.demo-tab {
+  font-family: var(--font-family);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 7px 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background: transparent;
+  color: rgba(255,255,255,0.55);
+  transition: all 0.2s ease;
+}
+
+.demo-tab.active {
+  background: var(--app-accent);
+  color: #fff;
+}
+
+/* =====================================================
+   IPHONE 15 PRO FRAME
+   ===================================================== */
+.iphone-frame {
+  width: 393px;
+  height: 852px;
+  background: #000;
+  border-radius: 55px;
+  box-shadow:
+    0 0 0 2px #3a3a3c,
+    0 0 0 6px #1c1c1e,
+    0 40px 80px rgba(0,0,0,0.6);
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.dynamic-island {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 34px;
+  background: #000;
+  border-radius: 20px;
+  z-index: 100;
+}
+
+.screen-area {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  border-radius: 55px;
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+/* =====================================================
+   SCREEN PANELS & NAVIGATION
+   ===================================================== */
+.screen {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--color-bg);
+  transform: translateX(100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 300ms ease, opacity 300ms ease;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.screen.active {
+  transform: translateX(0);
+  opacity: 1;
+  pointer-events: all;
+}
+
+.screen.exiting {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+/* =====================================================
+   STATUS BAR
+   ===================================================== */
+.status-bar {
+  height: 54px;
+  padding: 14px 20px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+  color: var(--color-label);
+}
+
+.status-time {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+}
+
+.status-icons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-label);
+}
+
+/* =====================================================
+   NAVIGATION BAR
+   ===================================================== */
+.nav-bar {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 0 16px;
+  flex-shrink: 0;
+  border-bottom: 0.5px solid var(--color-border);
+}
+
+.nav-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--color-label);
+  letter-spacing: -0.41px;
+}
+
+.nav-back-btn {
+  position: absolute;
+  left: 10px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--app-accent);
+  padding: 8px 6px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.nav-back-label {
+  font-size: 17px;
+  color: var(--app-accent);
+}
+
+.nav-action-btn {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* =====================================================
+   HOME INDICATOR
+   ===================================================== */
+.home-indicator {
+  height: 34px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.home-indicator::after {
+  content: '';
+  width: 134px;
+  height: 5px;
+  background: var(--color-label);
+  opacity: 0.2;
+  border-radius: 3px;
+}
+
+/* =====================================================
+   EVENTS LIST SCREEN
+   ===================================================== */
+.events-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+.events-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px 10px;
+}
+
+.section-date {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-label);
+}
+
+.section-badge {
+  min-width: 26px;
+  height: 26px;
+  border-radius: 13px;
+  background: var(--app-accent);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6px;
+}
+
+/* All-day banner row */
+.event-row {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.event-row:active { opacity: 0.7; }
+
+.all-day-banner {
+  background: rgba(119,154,252,0.08);
+  border-radius: var(--radius-inner);
+  margin: 0 12px 8px;
+  padding: 12px 14px;
+  border-left: 3px solid var(--app-accent);
+}
+
+.all-day-row-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.all-day-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--app-accent);
+  flex-shrink: 0;
+}
+
+.event-row-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.event-row-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-label);
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.event-row-location {
+  font-size: 12px;
+  color: var(--color-muted);
+  display: block;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Small all-day pill on list row */
+.all-day-pill-small {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--app-accent);
+  background: rgba(119,154,252,0.15);
+  border-radius: 20px;
+  padding: 3px 9px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Timed event row */
+.timed-event-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 12px 8px;
+  padding: 12px 14px;
+  background: var(--color-surface);
+  border-radius: var(--radius-inner);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+.event-time-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  min-width: 36px;
+  flex-shrink: 0;
+}
+
+.event-time-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-label);
+  line-height: 1;
+}
+
+.event-time-ampm {
+  font-size: 10px;
+  color: var(--color-muted);
+  margin-top: 1px;
+}
+
+.row-chevron {
+  color: var(--color-muted);
+  flex-shrink: 0;
+}
+
+/* =====================================================
+   DETAIL SCREEN — SCROLL CONTAINER
+   ===================================================== */
+.screen-scroll {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* =====================================================
+   SHADOW UTILITY (mirrors SwiftUI .shadowfy())
+   ===================================================== */
+.shadowfy {
+  box-shadow: 0 2px 10px rgba(0,0,0,0.10), 0 1px 3px rgba(0,0,0,0.08);
+}
+
+/* =====================================================
+   DETAIL HERO CARD
+   ===================================================== */
+.detail-hero-card {
+  border-radius: var(--radius-base);
+  overflow: hidden;
+  position: relative;
+  background: var(--color-surface);
+}
+
+.hero-image-bg {
+  height: 180px;
+  background: linear-gradient(135deg, #4a6bd4 0%, #7297E6 50%, #9ab5f0 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-image-bg--exhibit {
+  background: linear-gradient(135deg, #c47a1a 0%, #e8a844 50%, #f5c878 100%);
+}
+
+.hero-image-placeholder {
+  opacity: 0.5;
+}
+
+.hero-overlay {
+  background: rgba(255,255,255,0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 14px 16px 16px;
+  border-radius: var(--radius-base);
+  margin: -4px 4px 4px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .hero-overlay {
+    background: rgba(60,60,60,0.85);
+  }
+}
+
+.hero-thumb-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.hero-thumb {
+  width: 70px;
+  height: 70px;
+  border-radius: var(--radius-inner);
+  background: linear-gradient(135deg, #4a6bd4 0%, #7297E6 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+}
+
+.hero-thumb--exhibit {
+  background: linear-gradient(135deg, #c47a1a 0%, #e8a844 100%);
+}
+
+.hero-event-name {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--color-label);
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
+
+.hero-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* =====================================================
+   DETAIL ROW (date / time / location)
+   ===================================================== */
+.detail-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.detail-row-icon {
+  color: var(--color-muted);
+  flex-shrink: 0;
+}
+
+.detail-row-text {
+  font-size: 12px;
+  color: var(--color-label);
+  line-height: 1.3;
+}
+
+/* =====================================================
+   ALL DAY CAPSULE — the new component (ASDLC-562)
+   =====================================================
+   Replaces the time text string for all-day events.
+   Uses --app-accent (BMColor.ActionButton.background)
+   with a tinted background, capsule border-radius.
+   ===================================================== */
+.all-day-capsule {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  color: #fff;
+  background: var(--app-accent);
+  border-radius: 20px;            /* full capsule shape */
+  padding: 3px 10px;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+@media (prefers-color-scheme: dark) {
+  .all-day-capsule {
+    background: rgba(119,154,252,0.85);
+  }
+}
+
+/* =====================================================
+   DESCRIPTION CARD
+   ===================================================== */
+.description-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-base);
+  padding: 16px;
+}
+
+.description-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-label);
+  margin-bottom: 10px;
+}
+
+.description-body {
+  font-size: 12px;
+  color: var(--color-label);
+  line-height: 1.6;
+}
+
+/* =====================================================
+   ACTION BUTTONS
+   ===================================================== */
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.action-btn {
+  width: 100%;
+  padding: 13px 16px;
+  font-family: var(--font-family);
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--app-accent);
+  border: none;
+  border-radius: var(--radius-base);
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.15s ease;
+}
+
+.action-btn:active { opacity: 0.8; }
+
+/* =====================================================
+   TOAST
+   ===================================================== */
+.toast {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-120%);
+  background: rgba(50,50,55,0.95);
+  color: #fff;
+  font-family: var(--font-family);
+  font-size: 13px;
+  padding: 10px 20px;
+  border-radius: 20px;
+  white-space: nowrap;
+  z-index: 9999;
+  transition: transform 0.3s ease;
+  pointer-events: none;
+  backdrop-filter: blur(12px);
+}
+
+.toast.visible {
+  transform: translateX(-50%) translateY(0);
+}
