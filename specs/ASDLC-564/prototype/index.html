@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Berkeley Mobile — Events: All Day Indicator (ASDLC-564)</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ============================================================
+       iPhone 15 Pro Frame (393×852, Dynamic Island)
+       ============================================================ -->
+  <div class="iphone-frame">
+    <div class="dynamic-island"></div>
+
+    <div class="screen-area">
+
+      <!-- ==========================================================
+           Screen 1: Events List
+           Shows 4 events — 2 all-day (with pill badge), 2 timed
+           ========================================================== -->
+      <div id="screen-events" class="screen">
+        <!-- Content is injected by buildEventsScreen() in app.js -->
+      </div>
+
+      <!-- ==========================================================
+           Screen 2: Event Detail Page
+           Key feature: time row shows "All Day" capsule badge
+           when event.isAllDay === true, instead of "12:00 AM"
+           ========================================================== -->
+      <div id="screen-detail" class="screen">
+        <!-- Content is injected by buildDetailScreen(event) in app.js -->
+      </div>
+
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

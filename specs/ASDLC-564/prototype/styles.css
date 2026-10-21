@@ -1,0 +1,496 @@
+/* =============================================================
+   Design Tokens — extracted from Berkeley Mobile iOS via CodeGraph
+   BMColor.ActionButton.background → accent
+   BMColor.modalBackground → background
+   BMColor.cardBackground → surface
+   BMColor.Calendar.blackText → label
+   BMColor.Calendar.grayedText → muted
+   CardView.layer.cornerRadius → radius
+   BMFont → Apercu (falls back to system-ui)
+   ============================================================= */
+:root {
+  --app-accent:         #779AFC;   /* rgb(119,154,252) ActionButton.background */
+  --app-accent-dim:     rgba(119, 154, 252, 0.18);
+  --app-accent-border:  rgba(119, 154, 252, 0.35);
+  --color-bg:           #FAFAFA;   /* modalBackground light */
+  --color-surface:      #FFFFFF;   /* cardBackground light */
+  --color-label:        #2C2C2D;   /* Calendar.blackText light */
+  --color-muted:        #626162;   /* Calendar.grayedText light */
+  --color-border:       rgba(0, 0, 0, 0.10);
+  --color-academic:     #7297E6;   /* eventAcademic */
+  --color-holiday:      #F3B659;   /* eventHoliday */
+  --color-event-default:#8C8C8C;   /* eventDefault */
+  --radius-base:        12px;      /* CardView cornerRadius */
+  --radius-card:        10px;      /* image clipShape cornerRadius */
+  --font-family:        -apple-system, 'SF Pro Text', system-ui, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg:      #000000;
+    --color-surface: #484747;    /* cardBackground dark rgb(72,71,71) */
+    --color-label:   #FAFAFA;    /* Calendar.blackText dark */
+    --color-muted:   #AAAAAA;    /* Calendar.grayedText dark */
+    --color-border:  rgba(255, 255, 255, 0.12);
+    --app-accent-dim:   rgba(119, 154, 252, 0.25);
+    --app-accent-border:rgba(119, 154, 252, 0.50);
+  }
+}
+
+/* =============================================================
+   Base Reset
+   ============================================================= */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #1a1a2e;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-family: var(--font-family);
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* =============================================================
+   iPhone 15 Pro Frame
+   ============================================================= */
+.iphone-frame {
+  width: 393px;
+  height: 852px;
+  background: #000;
+  border-radius: 55px;
+  box-shadow:
+    0 0 0 2px #3a3a3c,
+    0 0 0 6px #1c1c1e,
+    0 40px 80px rgba(0, 0, 0, 0.6);
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.dynamic-island {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 34px;
+  background: #000;
+  border-radius: 20px;
+  z-index: 200;
+}
+
+.screen-area {
+  position: absolute;
+  inset: 0;
+  border-radius: 55px;
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+/* =============================================================
+   Screen Panels & Push/Pop Transitions
+   ============================================================= */
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg);
+  transform: translateX(100%);
+  transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.screen.active { transform: translateX(0); }
+.screen.slide-out { transform: translateX(-30%); }
+
+/* =============================================================
+   Status Bar (9:41, signal, wifi, battery)
+   ============================================================= */
+.status-bar {
+  height: 54px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 28px 8px;
+  flex-shrink: 0;
+  color: var(--color-label);
+}
+
+.status-time {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+}
+
+.status-icons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* =============================================================
+   Navigation Bar
+   ============================================================= */
+.nav-bar {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  flex-shrink: 0;
+  position: relative;
+  border-bottom: 0.5px solid var(--color-border);
+}
+
+.nav-title {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.4px;
+  color: var(--color-label);
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.nav-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--app-accent);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 16px;
+  font-weight: 400;
+  padding: 6px 4px;
+  border-radius: 8px;
+  line-height: 1;
+  transition: opacity 0.15s;
+  letter-spacing: -0.2px;
+}
+
+.nav-btn:active { opacity: 0.45; }
+
+/* =============================================================
+   Scroll Content Container
+   ============================================================= */
+.scroll-content {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.scroll-content::-webkit-scrollbar { display: none; }
+
+/* =============================================================
+   Events List Screen
+   ============================================================= */
+.events-tab-strip {
+  display: flex;
+  padding: 0 16px 0;
+  border-bottom: 0.5px solid var(--color-border);
+  flex-shrink: 0;
+  background: var(--color-bg);
+}
+
+.events-tab-btn {
+  flex: 1;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  padding: 10px 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-muted);
+  font-family: var(--font-family);
+  transition: color 0.18s, border-color 0.18s;
+  letter-spacing: -0.1px;
+}
+
+.events-tab-btn.active {
+  color: var(--app-accent);
+  border-bottom-color: var(--app-accent);
+  font-weight: 600;
+}
+
+.section-header {
+  padding: 18px 16px 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-muted);
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.event-row {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  gap: 12px;
+  cursor: pointer;
+  border-bottom: 0.5px solid var(--color-border);
+  background: var(--color-bg);
+  transition: background 0.1s;
+}
+
+.event-row:active { background: var(--color-border); }
+
+.event-type-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 1px;
+  align-self: flex-start;
+  margin-top: 5px;
+}
+
+.event-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.event-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-label);
+  letter-spacing: -0.2px;
+  margin-bottom: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.event-meta {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.event-time-text {
+  font-size: 13px;
+  color: var(--color-muted);
+  letter-spacing: -0.1px;
+}
+
+/* Small All Day badge in the list */
+.event-allday-pill {
+  display: inline-flex;
+  align-items: center;
+  background: var(--app-accent-dim);
+  color: var(--app-accent);
+  border: 1px solid var(--app-accent-border);
+  border-radius: 100px;
+  padding: 1px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1px;
+}
+
+.event-chevron {
+  color: var(--color-muted);
+  flex-shrink: 0;
+  opacity: 0.5;
+}
+
+/* =============================================================
+   Event Detail Screen
+   ============================================================= */
+.detail-scroll {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px 16px 32px;
+}
+.detail-scroll::-webkit-scrollbar { display: none; }
+
+/* Hero card — ZStack: background gradient + glass overlay content */
+.detail-hero {
+  position: relative;
+  border-radius: var(--radius-base);
+  overflow: hidden;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.14);
+}
+
+.detail-hero-bg {
+  width: 100%;
+  height: 300px;
+  display: block;
+  /* gradient set inline via JS */
+}
+
+.detail-hero-glass {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.74);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 16px;
+  border-radius: var(--radius-base);
+}
+
+@media (prefers-color-scheme: dark) {
+  .detail-hero-glass {
+    background: rgba(30, 30, 30, 0.82);
+  }
+}
+
+.detail-thumb-wrap {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.detail-thumb {
+  width: 100px;
+  height: 100px;
+  border-radius: var(--radius-card);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.95);
+  letter-spacing: -1px;
+  /* background set via JS */
+}
+
+.detail-event-name-label {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-label);
+  letter-spacing: -0.3px;
+  line-height: 1.3;
+  margin-bottom: 10px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .detail-event-name-label { color: #FFFFFF; }
+}
+
+.detail-info-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.detail-info-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--color-label);
+  font-weight: 400;
+}
+
+@media (prefers-color-scheme: dark) {
+  .detail-info-row { color: rgba(255, 255, 255, 0.85); }
+}
+
+.detail-info-row svg {
+  flex-shrink: 0;
+  opacity: 0.65;
+}
+
+/* =============================================================
+   ALL DAY BADGE — the key UI component for this issue
+   ============================================================= */
+.all-day-badge {
+  display: inline-flex;
+  align-items: center;
+  background: var(--app-accent-dim);
+  color: var(--app-accent);
+  border: 1px solid var(--app-accent-border);
+  border-radius: 100px;        /* capsule / pill shape */
+  padding: 2px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1px;
+  line-height: 1.5;
+}
+
+/* =============================================================
+   Description Card
+   ============================================================= */
+.desc-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-base);
+  padding: 16px;
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.08);
+  margin-bottom: 16px;
+}
+
+.desc-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-label);
+  margin-bottom: 10px;
+  letter-spacing: -0.2px;
+}
+
+.desc-body {
+  font-size: 13px;
+  color: var(--color-muted);
+  line-height: 1.65;
+  letter-spacing: -0.1px;
+}
+
+/* =============================================================
+   Action Buttons
+   ============================================================= */
+.action-btn {
+  display: block;
+  width: 100%;
+  padding: 14px 16px;
+  background: var(--app-accent);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-base);
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--font-family);
+  cursor: pointer;
+  text-align: center;
+  box-shadow: 0 3px 14px rgba(119, 154, 252, 0.35);
+  margin-bottom: 12px;
+  transition: opacity 0.15s;
+  letter-spacing: -0.1px;
+}
+
+.action-btn:active { opacity: 0.72; }
+
+/* =============================================================
+   Home Indicator
+   ============================================================= */
+.home-indicator {
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.home-bar {
+  width: 134px;
+  height: 5px;
+  background: var(--color-label);
+  border-radius: 3px;
+  opacity: 0.18;
+}
