@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ASDLC-567 — All Day Event Detail Prototype</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- Prototype controls (outside the iPhone frame) -->
+  <div class="proto-controls">
+    <span class="proto-label">Berkeley Mobile iOS · Event Detail · ASDLC-567</span>
+    <div class="proto-toggle">
+      <button id="btn-bug" onclick="setState('bug')">Current (Bug)</button>
+      <button id="btn-fix" class="active" onclick="setState('fix')">Expected (Fix)</button>
+    </div>
+    <span id="state-badge" class="proto-state-badge fix">All Day capsule shown</span>
+  </div>
+
+  <!-- iPhone 15 Pro frame -->
+  <div class="iphone-frame" id="iphone" data-state="fix">
+    <div class="dynamic-island"></div>
+
+    <div class="screen-area">
+      <!-- Status Bar -->
+      <div class="status-bar">
+        <span class="status-time">9:41</span>
+        <div class="status-icons">
+          <!-- Signal bars SVG -->
+          <svg width="17" height="12" viewBox="0 0 17 12" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0"  y="7" width="3" height="5" rx="0.8"/>
+            <rect x="4.5" y="4.5" width="3" height="7.5" rx="0.8"/>
+            <rect x="9" y="2" width="3" height="10" rx="0.8"/>
+            <rect x="13.5" y="0" width="3" height="12" rx="0.8"/>
+          </svg>
+          <!-- Wifi SVG -->
+          <svg width="16" height="12" viewBox="0 0 16 12" xmlns="http://www.w3.org/2000/svg" fill="none" stroke-width="1.5" stroke-linecap="round">
+            <path d="M1 4.5 C3.7 2 7 0.5 8 0.5 S12.3 2 15 4.5" stroke="currentColor" fill="none" opacity="0.4"/>
+            <path d="M3.2 7 C4.8 5.5 6.5 4.5 8 4.5 S11.2 5.5 12.8 7" stroke="currentColor" fill="none" opacity="0.7"/>
+            <path d="M5.5 9.5 C6.3 8.6 7.1 8 8 8 S9.7 8.6 10.5 9.5" stroke="currentColor" fill="none"/>
+            <circle cx="8" cy="11.5" r="1" fill="currentColor" stroke="none"/>
+          </svg>
+          <!-- Battery SVG -->
+          <svg width="25" height="12" viewBox="0 0 25 12" xmlns="http://www.w3.org/2000/svg" fill="none">
+            <rect x="0.5" y="0.5" width="21" height="11" rx="3" stroke="currentColor" stroke-opacity="0.4" stroke-width="1"/>
+            <rect x="22.5" y="3.5" width="2" height="5" rx="1" fill="currentColor" fill-opacity="0.4"/>
+            <rect x="2" y="2" width="16" height="8" rx="2" fill="currentColor"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Navigation Bar -->
+      <div class="nav-bar">
+        <div class="nav-back" onclick="void(0)">
+          <!-- chevron.left -->
+          <svg width="10" height="17" viewBox="0 0 10 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8.5 1.5L1.5 8.5L8.5 15.5" stroke="#7B9AFC" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Events</span>
+        </div>
+        <span class="nav-title">Event</span>
+        <div class="nav-action">
+          <!-- calendar.badge.plus -->
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 2V6M16 2V6M3 10H21M5 4H19C20.1 4 21 4.9 21 6V20C21 21.1 20.1 22 19 22H5C3.9 22 3 21.1 3 20V6C3 4.9 3.9 4 5 4Z" stroke="#7B9AFC" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M16 16H19M17.5 14.5V17.5" stroke="#7B9AFC" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Scrollable Screen Content -->
+      <div class="screen" id="screen-event-detail">
+        <div class="scroll-content">
+
+          <!-- BMDetailHeaderView -->
+          <div class="event-header-card">
+            <!-- Background image (CSS gradient — no external URL) -->
+            <div class="event-bg-image"></div>
+
+            <!-- Overlay with event info -->
+            <div class="event-overlay">
+              <!-- Small thumbnail -->
+              <div class="event-thumb">CAL</div>
+
+              <!-- Event name -->
+              <div class="event-name">ASUC Senate Open Forum — Fall 2026</div>
+
+              <!-- Event meta rows -->
+              <div class="event-meta">
+
+                <!-- Date row (EventDetailRow: systemImageName: "calendar") -->
+                <div class="event-detail-row">
+                  <!-- calendar icon -->
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8 2V6M16 2V6M3 10H21M5 4H19C20.1 4 21 4.9 21 6V20C21 21.1 20.1 22 19 22H5C3.9 22 3 21.1 3 20V6C3 4.9 3.9 4 5 4Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <span class="row-text">Thursday, October 29</span>
+                </div>
+
+                <!-- Time row (EventDetailRow: systemImageName: "clock") -->
+                <!-- BUG state: shows raw time value for an All Day event -->
+                <!-- FIX state: shows "All Day" capsule/badge -->
+                <div class="event-detail-row">
+                  <!-- clock icon -->
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/>
+                    <path d="M12 7V12L15 14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+
+                  <!-- CURRENT BUG: time value shown for all-day event -->
+                  <span class="row-text time-row-bug">12:00 AM</span>
+
+                  <!-- EXPECTED FIX: "All Day" capsule/pill badge -->
+                  <span class="all-day-badge time-row-fix">All Day</span>
+                </div>
+
+                <!-- Location row (EventDetailRow: systemImageName: "mappin.and.ellipse") -->
+                <div class="event-detail-row">
+                  <!-- mappin.and.ellipse icon -->
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2C8.7 2 6 4.7 6 8C6 12.5 12 19 12 19C12 19 18 12.5 18 8C18 4.7 15.3 2 12 2Z" stroke="currentColor" stroke-width="1.8"/>
+                    <circle cx="12" cy="8" r="2.5" stroke="currentColor" stroke-width="1.8"/>
+                    <path d="M5 18C3.3 18.8 2 19.8 2 21H22C22 19.8 20.7 18.8 19 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                  <span class="row-text">MLK Student Union, Pauley Ballroom</span>
+                </div>
+
+              </div><!-- /event-meta -->
+            </div><!-- /event-overlay -->
+          </div><!-- /event-header-card -->
+
+          <!-- BMDetailDescriptionView -->
+          <div class="description-card">
+            <div class="card-title">Description</div>
+            <div class="card-body">
+              The ASUC Senate holds an open forum for all UC Berkeley students to engage directly with elected senators. Topics include dining hall contract negotiations, campus housing policy, student fee allocations for the 2026–27 academic year, and community safety initiatives. All registered students are welcome to attend and ask questions during the public comment period.
+            </div>
+          </div>
+
+          <!-- BMActionButton (Learn More + Register) -->
+          <div class="action-buttons">
+            <button class="bm-action-button">Learn More</button>
+            <button class="bm-action-button">Register</button>
+          </div>
+
+        </div><!-- /scroll-content -->
+      </div><!-- /screen -->
+
+      <!-- Home indicator -->
+      <div class="home-indicator"></div>
+
+    </div><!-- /screen-area -->
+  </div><!-- /iphone-frame -->
+
+  <script src="app.js"></script>
+</body>
+</html>
