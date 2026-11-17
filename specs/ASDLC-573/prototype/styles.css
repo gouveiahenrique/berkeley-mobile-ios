@@ -1,0 +1,454 @@
+/* ============================================================
+   Design tokens — extracted from berkeley-mobile codebase
+   ============================================================ */
+:root {
+  /* Extracted from BMColor (Colors.swift, Colors+ActionButton.swift) */
+  --app-accent:        #779AFC;   /* ActionButton.background / barGraphEntryCurrent */
+  --color-bg:          #F2F2F7;   /* iOS system grouped background (light) */
+  --color-surface:     #FAFAFA;   /* BMColor.cardBackground (light) */
+  --color-modal:       #FAFAFA;   /* BMColor.modalBackground (light) */
+  --color-label:       #1C1C1E;   /* iOS .label equivalent */
+  --color-muted:       #6C6C70;   /* iOS secondaryLabel equivalent */
+  --color-border:      rgba(60,60,67,0.18);
+  --color-error:       #FF3B30;
+  --color-success:     #34C759;
+  --color-seg-highlight: #FAD47E; /* BMColor.segmentedControlHighlight */
+  --color-salmon:      #FB9B8E;   /* BMColor.selectedButtonBackground */
+
+  /* Typography — BMFont uses "Apercu"; falls back to system-ui */
+  --font-family:       'Apercu', -apple-system, 'SF Pro Text', system-ui, sans-serif;
+
+  /* Layout */
+  --radius-base:       15px;      /* DrawerViewController cornerRadius */
+  --radius-card:       12px;      /* HomeDrawerRowImageView clipShape */
+  --spacing-unit:      16px;      /* DrawerViewController layoutMargins */
+
+  /* iOS system palette */
+  --ios-blue:   #007AFF; --ios-green: #34C759; --ios-red: #FF3B30;
+  --ios-orange: #FF9500; --ios-yellow: #FFCC00; --ios-purple: #AF52DE;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg:      #000000;
+    --color-surface: #484747;   /* BMColor.cardBackground (dark) */
+    --color-modal:   #414141;   /* BMColor.modalBackground (dark) */
+    --color-label:   #FFFFFF;
+    --color-muted:   rgba(235,235,245,0.6);
+    --color-border:  rgba(84,84,88,0.65);
+  }
+}
+
+/* ============================================================
+   Reset & base
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #1a1a2e;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-family: var(--font-family);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================================
+   iPhone 15 Pro frame
+   ============================================================ */
+.iphone-frame {
+  width: 393px;
+  height: 852px;
+  background: #000;
+  border-radius: 55px;
+  box-shadow:
+    0 0 0 2px #3a3a3c,
+    0 0 0 6px #1c1c1e,
+    0 40px 80px rgba(0,0,0,0.6);
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.dynamic-island {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 34px;
+  background: #000;
+  border-radius: 20px;
+  z-index: 100;
+}
+
+.screen-area {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  border-radius: 55px;
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+/* ============================================================
+   Status bar
+   ============================================================ */
+.status-bar {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 54px;
+  display: flex;
+  align-items: flex-end;
+  padding: 0 28px 10px;
+  justify-content: space-between;
+  z-index: 90;
+  pointer-events: none;
+}
+
+.status-time {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-label);
+  letter-spacing: -0.3px;
+}
+
+.status-icons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ============================================================
+   Map area (simulated)
+   ============================================================ */
+.map-area {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 100%;
+  background: linear-gradient(170deg, #c8d8b4 0%, #b8cba0 20%, #a9bd8c 40%, #d4e4c0 60%, #b0c89a 80%, #9ab284 100%);
+  overflow: hidden;
+}
+
+.map-road {
+  position: absolute;
+  background: #e0d8c4;
+}
+
+.map-road.h1 { top: 32%; left: 0; right: 0; height: 8px; }
+.map-road.h2 { top: 55%; left: 0; right: 0; height: 5px; }
+.map-road.v1 { left: 28%; top: 0; bottom: 0; width: 6px; }
+.map-road.v2 { left: 60%; top: 0; bottom: 0; width: 4px; }
+
+.map-block {
+  position: absolute;
+  background: #c5d4aa;
+  border-radius: 3px;
+}
+.map-block.b1 { top: 10%; left: 10%; width: 100px; height: 60px; }
+.map-block.b2 { top: 10%; left: 35%; width: 80px; height: 50px; }
+.map-block.b3 { top: 38%; left: 8%; width: 70px; height: 40px; }
+.map-block.b4 { top: 38%; left: 35%; width: 90px; height: 55px; }
+.map-block.b5 { top: 38%; left: 65%; width: 70px; height: 45px; }
+.map-block.b6 { top: 62%; left: 8%; width: 85px; height: 50px; }
+.map-block.b7 { top: 62%; left: 35%; width: 75px; height: 60px; }
+.map-block.b8 { top: 62%; left: 65%; width: 60px; height: 55px; }
+
+.map-pin {
+  position: absolute;
+  width: 24px;
+  height: 30px;
+  transform: translateX(-50%);
+}
+
+/* ============================================================
+   Drawer
+   ============================================================ */
+.drawer {
+  position: absolute;
+  left: 0; right: 0;
+  bottom: 0;
+  border-radius: var(--radius-base) var(--radius-base) 0 0;
+  background: var(--color-modal);
+  box-shadow: 0 -4px 24px rgba(0,0,0,0.12);
+  transition: height 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.drawer.medium { height: 420px; }
+.drawer.tall   { height: 640px; }
+
+.drawer-handle {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  padding-top: 10px;
+  padding-bottom: 4px;
+}
+
+.drawer-handle-pill {
+  width: 36px;
+  height: 5px;
+  background: rgba(60,60,67,0.3);
+  border-radius: 3px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .drawer-handle-pill { background: rgba(255,255,255,0.3); }
+}
+
+.drawer-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0 16px;
+}
+
+/* ============================================================
+   Segmented control (BMSegmentedControlView)
+   ============================================================ */
+.seg-control {
+  display: flex;
+  align-items: center;
+  padding-top: 16px;
+  padding-bottom: 4px;
+  flex-shrink: 0;
+  gap: 0;
+}
+
+.seg-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.seg-tab + .seg-tab { margin-left: auto; }
+
+.seg-tab-label {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-muted);
+  letter-spacing: -0.3px;
+  white-space: nowrap;
+}
+
+.seg-tab.active .seg-tab-label {
+  color: var(--color-label);
+}
+
+.seg-tab-indicator {
+  height: 8px;
+  width: 100%;
+  min-width: 40px;
+  border-radius: 4px;
+  background: transparent;
+}
+
+.seg-tab.active .seg-tab-indicator {
+  background: var(--color-seg-highlight);
+}
+
+/* ============================================================
+   Loading state
+   ============================================================ */
+.loading-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 28px;
+}
+
+/* BUG variant: entire content (seg control + spinner) centered */
+.bug-drawer-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;  /* centers everything vertically — the bug */
+  padding: 0 16px;
+  gap: 0;
+}
+
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid rgba(0,0,0,0.12);
+  border-top-color: var(--color-muted);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@media (prefers-color-scheme: dark) {
+  .spinner { border-color: rgba(255,255,255,0.12); border-top-color: rgba(255,255,255,0.5); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-muted);
+  letter-spacing: 0.5px;
+  margin-top: 8px;
+}
+
+/* ============================================================
+   Dining list rows
+   ============================================================ */
+.list-scroll {
+  flex: 1;
+  overflow-y: auto;
+  margin-top: 8px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.list-scroll::-webkit-scrollbar { display: none; }
+
+.dining-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.dining-row:last-child { border-bottom: none; }
+
+.dining-thumb {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius-card);
+  flex-shrink: 0;
+  object-fit: cover;
+  overflow: hidden;
+}
+
+.dining-thumb-bg {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius-card);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+}
+
+.dining-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.dining-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-label);
+  margin-bottom: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dining-sub {
+  font-size: 13px;
+  color: var(--color-muted);
+  margin-bottom: 4px;
+}
+
+.open-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 10px;
+  background: rgba(52,199,89,0.15);
+  color: var(--color-success);
+}
+
+.closed-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 10px;
+  background: rgba(255,59,48,0.12);
+  color: var(--color-error);
+}
+
+.row-chevron {
+  color: rgba(60,60,67,0.3);
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   Before/After toggle UI
+   ============================================================ */
+.toggle-bar {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0;
+  background: rgba(0,0,0,0.6);
+  border-radius: 20px;
+  padding: 3px;
+  z-index: 200;
+  white-space: nowrap;
+}
+
+.toggle-btn {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 5px 14px;
+  border-radius: 17px;
+  border: none;
+  cursor: pointer;
+  color: rgba(255,255,255,0.6);
+  background: transparent;
+  transition: all 0.2s;
+}
+
+.toggle-btn.active {
+  background: white;
+  color: #1C1C1E;
+}
+
+/* ============================================================
+   iOS type scale
+   ============================================================ */
+.ios-title-2     { font-size:22px; font-weight:700; }
+.ios-headline    { font-size:17px; font-weight:600; letter-spacing:-0.41px; }
+.ios-body        { font-size:17px; font-weight:400; letter-spacing:-0.41px; }
+.ios-subheadline { font-size:15px; font-weight:400; }
+.ios-footnote    { font-size:13px; font-weight:400; }
+.ios-caption-1   { font-size:12px; font-weight:400; }
+
+/* ============================================================
+   Home indicator
+   ============================================================ */
+.home-indicator {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 134px;
+  height: 5px;
+  background: var(--color-label);
+  border-radius: 3px;
+  opacity: 0.2;
+  z-index: 90;
+  pointer-events: none;
+}

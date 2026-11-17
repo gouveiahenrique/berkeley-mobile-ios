@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ASDLC-573 — Home Drawer Loading Layout</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     iPhone 15 Pro Frame
+══════════════════════════════════════════════════════════════════════════ -->
+<div class="iphone-frame">
+  <div class="dynamic-island"></div>
+
+  <div class="screen-area">
+
+    <!-- Status bar -->
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <!-- Signal bars -->
+        <svg width="17" height="12" viewBox="0 0 17 12" fill="none">
+          <rect x="0"  y="8"  width="3" height="4" rx="0.5" fill="currentColor" opacity="0.4"/>
+          <rect x="4"  y="5"  width="3" height="7" rx="0.5" fill="currentColor" opacity="0.4"/>
+          <rect x="8"  y="2"  width="3" height="10" rx="0.5" fill="currentColor"/>
+          <rect x="12" y="0"  width="3" height="12" rx="0.5" fill="currentColor"/>
+        </svg>
+        <!-- Wi-Fi -->
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor">
+          <path d="M8 9.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z"/>
+          <path d="M8 6.2c1.5 0 2.9.6 3.9 1.6l1.1-1.1A7 7 0 0 0 8 4.5a7 7 0 0 0-5 2.1l1.1 1.1A5.4 5.4 0 0 1 8 6.2z"/>
+          <path d="M8 3A10.1 10.1 0 0 1 15.2 6l1-1A11.6 11.6 0 0 0 8 1.4a11.6 11.6 0 0 0-8.2 3.6l1 1A10.1 10.1 0 0 1 8 3z" opacity="0.4"/>
+        </svg>
+        <!-- Battery -->
+        <svg width="25" height="12" viewBox="0 0 25 12">
+          <rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="currentColor" stroke-opacity="0.35" fill="none"/>
+          <rect x="2" y="2" width="16" height="8" rx="2" fill="currentColor"/>
+          <path d="M22.5 4v4a2 2 0 0 0 0-4z" fill="currentColor" opacity="0.4"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- ──────────────────────────────────────────────────────────────────
+         BUG VIEW: loading state — content centered (no VStack, Spacer
+         ineffective inside bare Group in NavigationStack)
+    ────────────────────────────────────────────────────────────────── -->
+    <div id="view-bug" style="display:flex; flex-direction:column; height:100%;">
+
+      <!-- Map background -->
+      <div class="map-area">
+        <div class="map-block b1"></div><div class="map-block b2"></div>
+        <div class="map-block b3"></div><div class="map-block b4"></div>
+        <div class="map-block b5"></div><div class="map-block b6"></div>
+        <div class="map-block b7"></div><div class="map-block b8"></div>
+        <div class="map-road h1"></div><div class="map-road h2"></div>
+        <div class="map-road v1"></div><div class="map-road v2"></div>
+        <!-- Berkeley campus label -->
+        <div style="position:absolute; top:28%; left:33%; font-size:9px; font-weight:600; color:#5a7a3a; opacity:0.8; letter-spacing:0.5px; text-transform:uppercase;">UC Berkeley</div>
+        <!-- Map pins -->
+        <svg class="map-pin" style="left:38%; top:30%;" viewBox="0 0 24 30" fill="none">
+          <circle cx="12" cy="12" r="12" fill="#779AFC"/>
+          <circle cx="12" cy="12" r="6" fill="white"/>
+          <path d="M12 24 L8 16 Q12 20 16 16 Z" fill="#779AFC"/>
+        </svg>
+        <svg class="map-pin" style="left:62%; top:42%;" viewBox="0 0 24 30" fill="none">
+          <circle cx="12" cy="12" r="12" fill="#FAD47E"/>
+          <circle cx="12" cy="12" r="6" fill="white"/>
+          <path d="M12 24 L8 16 Q12 20 16 16 Z" fill="#FAD47E"/>
+        </svg>
+      </div>
+
+      <!-- Drawer (bug: bare Group — content vertically centered) -->
+      <div class="drawer medium" style="position:absolute; left:0; right:0; bottom:0; border-radius:15px 15px 0 0; background:var(--color-modal); box-shadow:0 -4px 24px rgba(0,0,0,0.12); overflow:hidden; display:flex; flex-direction:column; height:420px; transition:height 0.35s cubic-bezier(0.32,0.72,0,1);">
+        <div class="drawer-handle">
+          <div class="drawer-handle-pill"></div>
+        </div>
+
+        <!-- BUG: justify-content:center mirrors behavior of bare Group in NavigationStack
+             without an explicit VStack — content floats to the middle -->
+        <div class="bug-drawer-content">
+          <!-- Seg control is hidden during loading in the original buggy code,
+               but the ProgressView + (broken) Spacer leaves a centered void.
+               We show the seg control grayed out to illustrate what appears centered. -->
+          <div class="seg-control" style="opacity:0.45; pointer-events:none; width:100%;">
+            <button class="seg-tab active" style="pointer-events:none;">
+              <span class="seg-tab-label">Dining</span>
+              <div class="seg-tab-indicator"></div>
+            </button>
+            <button class="seg-tab" style="pointer-events:none;">
+              <span class="seg-tab-label">Fitness</span>
+              <div class="seg-tab-indicator"></div>
+            </button>
+            <button class="seg-tab" style="pointer-events:none;">
+              <span class="seg-tab-label">Study</span>
+              <div class="seg-tab-indicator"></div>
+            </button>
+            <button class="seg-tab" style="pointer-events:none;">
+              <span class="seg-tab-label">Guides</span>
+              <div class="seg-tab-indicator"></div>
+            </button>
+          </div>
+          <!-- Spinner centered in remaining space -->
+          <div style="display:flex; flex-direction:column; align-items:center; margin-top:16px;">
+            <div class="spinner"></div>
+            <span class="loading-label">LOADING</span>
+          </div>
+        </div>
+
+        <!-- Bug annotation -->
+        <div style="position:absolute; top:50%; right:12px; transform:translateY(-50%); background:#FF3B30; color:white; font-size:10px; font-weight:700; padding:3px 8px; border-radius:8px; letter-spacing:0.3px; pointer-events:none; opacity:0.9;">BUG</div>
+      </div>
+
+    </div><!-- /#view-bug -->
+
+
+    <!-- ──────────────────────────────────────────────────────────────────
+         FIXED VIEW: VStack(alignment:.leading) with segmentedControlHeader
+         hoisted outside the if/else — always pinned to top
+    ────────────────────────────────────────────────────────────────── -->
+    <div id="view-fixed" style="display:none; flex-direction:column; height:100%;">
+
+      <!-- Map background -->
+      <div class="map-area">
+        <div class="map-block b1"></div><div class="map-block b2"></div>
+        <div class="map-block b3"></div><div class="map-block b4"></div>
+        <div class="map-block b5"></div><div class="map-block b6"></div>
+        <div class="map-block b7"></div><div class="map-block b8"></div>
+        <div class="map-road h1"></div><div class="map-road h2"></div>
+        <div class="map-road v1"></div><div class="map-road v2"></div>
+        <div style="position:absolute; top:28%; left:33%; font-size:9px; font-weight:600; color:#5a7a3a; opacity:0.8; letter-spacing:0.5px; text-transform:uppercase;">UC Berkeley</div>
+        <svg class="map-pin" style="left:38%; top:30%;" viewBox="0 0 24 30" fill="none">
+          <circle cx="12" cy="12" r="12" fill="#779AFC"/>
+          <circle cx="12" cy="12" r="6" fill="white"/>
+          <path d="M12 24 L8 16 Q12 20 16 16 Z" fill="#779AFC"/>
+        </svg>
+        <svg class="map-pin" style="left:62%; top:42%;" viewBox="0 0 24 30" fill="none">
+          <circle cx="12" cy="12" r="12" fill="#FAD47E"/>
+          <circle cx="12" cy="12" r="6" fill="white"/>
+          <path d="M12 24 L8 16 Q12 20 16 16 Z" fill="#FAD47E"/>
+        </svg>
+      </div>
+
+      <!-- Fixed drawer: loading state with seg control at top -->
+      <div id="drawer-fixed-loading" class="drawer medium" style="position:absolute; left:0; right:0; bottom:0; border-radius:15px 15px 0 0; background:var(--color-modal); box-shadow:0 -4px 24px rgba(0,0,0,0.12); overflow:hidden; display:flex; flex-direction:column; height:420px; transition:height 0.35s cubic-bezier(0.32,0.72,0,1);">
+        <div class="drawer-handle">
+          <div class="drawer-handle-pill"></div>
+        </div>
+
+        <!-- FIXED: VStack(alignment:.leading) — seg control always at top -->
+        <div class="drawer-content" style="display:flex; flex-direction:column; overflow:hidden;">
+
+          <!-- segmentedControlHeader — always visible (outside the if/else) -->
+          <div class="seg-control" id="fixed-seg-loading">
+            <button class="seg-tab active" data-panel="fixed-dining-panel" data-index="0" onclick="fixedTabSwitch(0)">
+              <span class="seg-tab-label">Dining</span>
+              <div class="seg-tab-indicator"></div>
+            </button>
+            <button class="seg-tab" data-panel="fixed-fitness-panel" data-index="1" onclick="fixedTabSwitch(1)">
+              <span class="seg-tab-label">Fitness</span>
+              <div class="seg-tab-indicator"></div>
+            </button>
+            <button class="seg-tab" data-panel="fixed-study-panel" data-index="2" onclick="fixedTabSwitch(2)">
+              <span class="seg-tab-label">Study</span>
+              <div class="seg-tab-indicator"></div>
+            </button>
+            <button class="seg-tab" data-panel="fixed-guides-panel" data-index="3" onclick="fixedTabSwitch(3)">
+              <span class="seg-tab-label">Guides</span>
+              <div class="seg-tab-indicator"></div>
+            </button>
+          </div>
+
+          <!-- Loading state: spinner pushed to top, Spacer() below -->
+          <div id="fixed-loading" style="display:flex; flex-direction:column; align-items:center; padding-top:28px; flex:1;">
+            <div class="spinner"></div>
+            <span class="loading-label">LOADING</span>
+          </div>
+
+          <!-- Loaded state (hidden by default; click "Loaded" to see) -->
+          <div id="fixed-loaded" style="display:none; flex:1; overflow:hidden; flex-direction:column;">
+            <div class="list-scroll">
+              <!-- Dining Hall rows -->
+              <div class="dining-row">
+                <div class="dining-thumb-bg" style="background:#FFF3E0;">🍜</div>
+                <div class="dining-info">
+                  <div class="dining-name">Crossroads Dining</div>
+                  <div class="dining-sub">2415 Bowditch St · 0.3 mi</div>
+                  <span class="open-tag">Open</span>
+                </div>
+                <svg class="row-chevron" width="8" height="13" viewBox="0 0 8 13"><path d="M1 1l6 5.5L1 12" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="dining-row">
+                <div class="dining-thumb-bg" style="background:#E8F5E9;">🥗</div>
+                <div class="dining-info">
+                  <div class="dining-name">Café 3</div>
+                  <div class="dining-sub">2400 Durant Ave · 0.5 mi</div>
+                  <span class="open-tag">Open</span>
+                </div>
+                <svg class="row-chevron" width="8" height="13" viewBox="0 0 8 13"><path d="M1 1l6 5.5L1 12" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="dining-row">
+                <div class="dining-thumb-bg" style="background:#F3E5F5;">🍕</div>
+                <div class="dining-info">
+                  <div class="dining-name">Clark Kerr Campus</div>
+                  <div class="dining-sub">2601 Warring St · 0.8 mi</div>
+                  <span class="closed-tag">Closed</span>
+                </div>
+                <svg class="row-chevron" width="8" height="13" viewBox="0 0 8 13"><path d="M1 1l6 5.5L1 12" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="dining-row">
+                <div class="dining-thumb-bg" style="background:#E3F2FD;">🌮</div>
+                <div class="dining-info">
+                  <div class="dining-name">Foothill Dining</div>
+                  <div class="dining-sub">2700 Hearst Ave · 1.0 mi</div>
+                  <span class="open-tag">Open</span>
+                </div>
+                <svg class="row-chevron" width="8" height="13" viewBox="0 0 8 13"><path d="M1 1l6 5.5L1 12" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="dining-row">
+                <div class="dining-thumb-bg" style="background:#FCE4EC;">🍱</div>
+                <div class="dining-info">
+                  <div class="dining-name">Sproul Hall Café</div>
+                  <div class="dining-sub">110 Sproul Hall · 0.2 mi</div>
+                  <span class="open-tag">Open</span>
+                </div>
+                <svg class="row-chevron" width="8" height="13" viewBox="0 0 8 13"><path d="M1 1l6 5.5L1 12" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fix annotation -->
+        <div style="position:absolute; top:72px; right:12px; background:#34C759; color:white; font-size:10px; font-weight:700; padding:3px 8px; border-radius:8px; letter-spacing:0.3px; pointer-events:none; opacity:0.9;">FIXED</div>
+      </div>
+
+      <!-- Sub-toggle: loading vs loaded -->
+      <div style="position:absolute; bottom:50px; left:50%; transform:translateX(-50%); display:flex; gap:0; background:rgba(0,0,0,0.6); border-radius:20px; padding:3px; z-index:200; white-space:nowrap;">
+        <button id="btn-state-loading" onclick="setLoadingState(true)"  style="font-size:10px; font-weight:600; padding:5px 12px; border-radius:17px; border:none; cursor:pointer; color:white; background:white; color:#1C1C1E;">Loading</button>
+        <button id="btn-state-loaded"  onclick="setLoadingState(false)" style="font-size:10px; font-weight:600; padding:5px 12px; border-radius:17px; border:none; cursor:pointer; color:rgba(255,255,255,0.6); background:transparent;">Loaded</button>
+      </div>
+
+    </div><!-- /#view-fixed -->
+
+    <!-- Home indicator -->
+    <div class="home-indicator"></div>
+
+    <!-- Main before/after toggle -->
+    <div class="toggle-bar">
+      <button id="btn-bug"   class="toggle-btn active">Before (Bug)</button>
+      <button id="btn-fixed" class="toggle-btn">After (Fix)</button>
+    </div>
+
+  </div><!-- /.screen-area -->
+</div><!-- /.iphone-frame -->
+
+<script src="app.js"></script>
+<script>
+  // State sub-toggle for the fixed view
+  function setLoadingState(isLoading) {
+    document.getElementById('fixed-loading').style.display = isLoading ? 'flex' : 'none';
+    document.getElementById('fixed-loaded').style.display  = isLoading ? 'none' : 'flex';
+    document.getElementById('btn-state-loading').style.background = isLoading ? 'white' : 'transparent';
+    document.getElementById('btn-state-loading').style.color      = isLoading ? '#1C1C1E' : 'rgba(255,255,255,0.6)';
+    document.getElementById('btn-state-loaded').style.background  = isLoading ? 'transparent' : 'white';
+    document.getElementById('btn-state-loaded').style.color       = isLoading ? 'rgba(255,255,255,0.6)' : '#1C1C1E';
+  }
+
+  // Tab switch for fixed view
+  function fixedTabSwitch(index) {
+    document.querySelectorAll('#fixed-seg-loading .seg-tab').forEach((t, i) => {
+      t.classList.toggle('active', i === index);
+    });
+    // Only Dining has content; show placeholder for others
+    if (index === 0) {
+      document.getElementById('fixed-loaded').querySelector('.list-scroll').style.display = '';
+    }
+  }
+</script>
+</body>
+</html>
