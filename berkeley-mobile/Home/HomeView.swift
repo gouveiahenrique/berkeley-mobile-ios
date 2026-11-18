@@ -87,6 +87,7 @@ struct HomeView: View {
                     }
                 }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .navigationBarTitleDisplayMode(.inline)
             .containerBackground(.clear, for: .navigation)
             .padding(.horizontal)
