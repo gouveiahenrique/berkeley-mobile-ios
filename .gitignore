@@ -5,6 +5,8 @@
 # ====================
 .DS_Store
 
+berkeley-mobile/GoogleService-Info.plist
+Secrets.swift
 
 # ====================
 # Obj-c/Swift
