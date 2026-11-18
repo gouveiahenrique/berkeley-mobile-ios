@@ -18,6 +18,7 @@ struct BerkeleyMobileWidgetBundle: WidgetBundle {
 
     var body: some Widget {
         GymOccupancyWidget()
+        CampusEventsWidget()
     }
 
     private func configureFirebaseIfNeeded() {

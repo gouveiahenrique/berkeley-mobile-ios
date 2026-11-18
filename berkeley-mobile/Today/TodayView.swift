@@ -5,16 +5,24 @@
 //  Created by Justin Wong on 3/10/26.
 //  Copyright © 2026 ASUC OCTO. All rights reserved.
 
+import FactoryKit
 import SwiftUI
 
 struct TodayView: View {
+    private enum Route: Hashable {
+        case events
+    }
+
+    @InjectedObservable(\.deepLinkRouter) private var deepLinkRouter
+
+    @State private var path = NavigationPath()
 
     init() {
         UINavigationBar.appearance().largeTitleTextAttributes = [.font : BMFont.bold(30)]
     }
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
                     headerView
@@ -34,16 +42,36 @@ struct TodayView: View {
             }
             .background(backgroundGradient.ignoresSafeArea())
             .navigationTitle("Today")
+            .navigationDestination(for: Route.self) { route in
+                switch route {
+                case .events:
+                    EventsView()
+                }
+            }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    NavigationLink {
-                        EventsView()
+                    Button {
+                        path.append(Route.events)
                     } label: {
                         Image(systemName: "calendar")
                     }
                 }
             }
         }
+        .onAppear {
+            presentEventsIfDeepLinked()
+        }
+        .onChange(of: deepLinkRouter.showEvents) { _, _ in
+            presentEventsIfDeepLinked()
+        }
+    }
+
+    /// Pushes `EventsView` when the Campus Events widget (or a Lock Screen variant) deep links in,
+    /// whether the app launches cold or is already running (BR-010).
+    private func presentEventsIfDeepLinked() {
+        guard deepLinkRouter.showEvents else { return }
+        deepLinkRouter.showEvents = false
+        path.append(Route.events)
     }
 
     private var headerView: some View {

@@ -1,0 +1,26 @@
+<!-- steering-agent-last-run: 2026-11-18 12:26 UTC -->
+# Repository Structure
+
+Top level: `berkeley-mobile/` (app source), `BerkeleyMobileWidget/` (widget extension), `berkeley-mobile.xcodeproj`, `berkeley-mobile.xcworkspace`, `Podfile`/`Podfile.lock`/`Pods/`, `app_preview_images/`, `README.md`, `CONTRIBUTING.md`, `LICENSE.md`.
+
+## berkeley-mobile/ folders
+| Folder | Contents |
+|---|---|
+| root files | `AppDelegate.swift`, `AppDelegate+Migration.swift`, `SceneDelegate.swift`, `TabBarController.swift`, `MainContainerViewController.swift`, `BerkeleyMobile+Injection.swift` |
+| `Data/` | `DataManager`, `DataSource` protocol, `BMNetworkingManager`, `BMConstants`, `BMError`, `BMEventManager`, `BMLocationManager`, `ItemProtocols`, `PropertyWrappers`, `SortingFunctions` |
+| `Home/` | Map, Dining, Fitness (gym data sources, `GymOccupancy`), Libraries, Guides, Search, Home Drawer, `HomeView`/`HomeViewModel` |
+| `Today/` | `TodayView`, tiles (News, Weather) |
+| `Events/` | Events views and `EventDataSource` (`EventsDataService`/`BerkeleyEvent`/`BerkeleyEventsDaySnapshot`/`WidgetEvent`, shared with the widget target; `EventsViewModel`, app-only) |
+| `Safety/`, `Resources/` | Safety map/log views and view model; resources views and view model |
+| `Drawer/` | Drawer view controllers and delegates |
+| `FeedbackForm/` | `FeedbackFormPresenter`, view, view model |
+| `Common/` | Shared UI components (cards, buttons, `BMCachedAsyncImageView`, `ImageLoader`, `ReviewPrompter`) |
+| `Utils/` | Extensions and helpers (`AtomicDictionary`, `Logger+Ext`, `DeepLink`/`DeepLinkRouter` for the `berkeleymobile://events` scheme, etc.) |
+| `Debug/` | `DebugView`, `DebugViewModel` (DEBUG only, opened by shake in `TabBarController`) |
+| `Assets/`, `Assets.xcassets/` | Colors, fonts, images |
+
+## Boundaries and dependencies
+- Views and view models use Firestore directly (e.g. `NewsDataViewModel`, `GuidesViewModel`, `DiningHallsViewModel`, `EventsViewModel`, `FeedbackFormViewModel`) or via `DataManager` + `DataSource` types (`MapDataSource`, `LibraryDataSource`, `GymDataSource`) or `BMNetworkingManager`.
+- View models are registered in `Container` (FactoryKit).
+- Targets in project: app `berkeley-mobile` and app-extension `BerkeleyMobileWidgetExtension`.
+- `BerkeleyMobileWidget/` (synchronized group, auto-membership): `GymOccupancyWidget.swift`, and `CampusEventsWidget.swift`/`CampusEventsWidgetViews.swift`/`EventsWidgetLogic.swift`/`WidgetEventsCache.swift` for the Campus Events widget. A handful of `berkeley-mobile/` files have explicit "Sources" membership in both targets instead: `GymOccupancyViewModel.swift`, `TimeInterval+Ext.swift`, `Fonts.swift`, and (for Campus Events) `EventDataSource/EventsDataService.swift` and `EventDataSource/WidgetEvent.swift`, plus `Utils/DeepLink.swift`.

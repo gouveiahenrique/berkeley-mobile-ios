@@ -186,6 +186,13 @@
 		E8912C2A2D869D6900C645B9 /* BMConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8912C292D869D6900C645B9 /* BMConstants.swift */; };
 		E891E2852DCD3104006CA0F5 /* BMCachedAsyncImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E891E2842DCD3104006CA0F5 /* BMCachedAsyncImageView.swift */; };
 		E891E2992DCD4DA3006CA0F5 /* EventsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E891E2982DCD4DA3006CA0F5 /* EventsViewModel.swift */; };
+		65161AA4C913BB94ABC525D4 /* EventsDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46C259AEF0E49D55D7D6CDEC /* EventsDataService.swift */; };
+		559F32EDA0B5AE64CDEA1C6C /* EventsDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46C259AEF0E49D55D7D6CDEC /* EventsDataService.swift */; };
+		224EB0685F7EB29E3F4BD632 /* WidgetEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 052CF1FBC11D3FB0E35AECDD /* WidgetEvent.swift */; };
+		EAC1ABE3F45B9B98AF966DA1 /* WidgetEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 052CF1FBC11D3FB0E35AECDD /* WidgetEvent.swift */; };
+		4B3E994B55A4B6B785412E05 /* DeepLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10E69E61ACEEF2CF3819C492 /* DeepLink.swift */; };
+		96F5D78AF2388773428F9EDD /* DeepLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10E69E61ACEEF2CF3819C492 /* DeepLink.swift */; };
+		BCCA4A4D8226E9C300E4C4EB /* DeepLinkRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CDB81176014BA583D33CC0 /* DeepLinkRouter.swift */; };
 		E891E2D92DD526FC006CA0F5 /* BMError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E891E2D82DD526FC006CA0F5 /* BMError.swift */; };
 		E891E2F32DD68536006CA0F5 /* BMNetworkingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E891E2F22DD68536006CA0F5 /* BMNetworkingManager.swift */; };
 		E891E2FD2DD86A91006CA0F5 /* SafetyMapMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = E891E2FC2DD86A91006CA0F5 /* SafetyMapMarker.swift */; };
@@ -411,6 +418,10 @@
 		E8912C292D869D6900C645B9 /* BMConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BMConstants.swift; sourceTree = "<group>"; };
 		E891E2842DCD3104006CA0F5 /* BMCachedAsyncImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BMCachedAsyncImageView.swift; sourceTree = "<group>"; };
 		E891E2982DCD4DA3006CA0F5 /* EventsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsViewModel.swift; sourceTree = "<group>"; };
+		46C259AEF0E49D55D7D6CDEC /* EventsDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsDataService.swift; sourceTree = "<group>"; };
+		052CF1FBC11D3FB0E35AECDD /* WidgetEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetEvent.swift; sourceTree = "<group>"; };
+		10E69E61ACEEF2CF3819C492 /* DeepLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLink.swift; sourceTree = "<group>"; };
+		B0CDB81176014BA583D33CC0 /* DeepLinkRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkRouter.swift; sourceTree = "<group>"; };
 		E891E2D82DD526FC006CA0F5 /* BMError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BMError.swift; sourceTree = "<group>"; };
 		E891E2F22DD68536006CA0F5 /* BMNetworkingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BMNetworkingManager.swift; sourceTree = "<group>"; };
 		E891E2FC2DD86A91006CA0F5 /* SafetyMapMarker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafetyMapMarker.swift; sourceTree = "<group>"; };
@@ -672,6 +683,8 @@
 				2E76503C2DB773A0009B5551 /* UserDefaults+Extension.swift */,
 				E8647FAC2E971ABA00A66820 /* Logger+Ext.swift */,
 				E8B6D49D2F7A196A002719AF /* TimeInterval+Ext.swift */,
+				10E69E61ACEEF2CF3819C492 /* DeepLink.swift */,
+				B0CDB81176014BA583D33CC0 /* DeepLinkRouter.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -720,6 +733,8 @@
 			children = (
 				01B2502E2516C45800CBA459 /* BMEventCalendarEntry.swift */,
 				E891E2982DCD4DA3006CA0F5 /* EventsViewModel.swift */,
+				46C259AEF0E49D55D7D6CDEC /* EventsDataService.swift */,
+				052CF1FBC11D3FB0E35AECDD /* WidgetEvent.swift */,
 			);
 			path = EventDataSource;
 			sourceTree = "<group>";
@@ -1201,6 +1216,10 @@
 				29AB5BBF241D8766007C3ECA /* HasOpenTimes.swift in Sources */,
 				306A54EE23613E3A00D59A7F /* MapViewController.swift in Sources */,
 				E891E2992DCD4DA3006CA0F5 /* EventsViewModel.swift in Sources */,
+				65161AA4C913BB94ABC525D4 /* EventsDataService.swift in Sources */,
+				224EB0685F7EB29E3F4BD632 /* WidgetEvent.swift in Sources */,
+				4B3E994B55A4B6B785412E05 /* DeepLink.swift in Sources */,
+				BCCA4A4D8226E9C300E4C4EB /* DeepLinkRouter.swift in Sources */,
 				13DACD222411DF7200A09982 /* UIStackView+Extensions.swift in Sources */,
 				2954F592245CD4B600DA66DA /* MainDrawerViewDelegate.swift in Sources */,
 				557756692544D822009C03BD /* Collection+Extension.swift in Sources */,
@@ -1367,6 +1386,9 @@
 				E889F8122DAC664E00202556 /* GymOccupancyViewModel.swift in Sources */,
 				E8C5AC512FA6BB6D0025D702 /* TimeInterval+Ext.swift in Sources */,
 				E889F82E2DAC9FC100202556 /* Fonts.swift in Sources */,
+				559F32EDA0B5AE64CDEA1C6C /* EventsDataService.swift in Sources */,
+				EAC1ABE3F45B9B98AF966DA1 /* WidgetEvent.swift in Sources */,
+				96F5D78AF2388773428F9EDD /* DeepLink.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
