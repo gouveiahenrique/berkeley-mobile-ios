@@ -19,7 +19,8 @@ README.md describes Berkeley Mobile as the ASUC OCTO app with library, gym, dini
 - Backend: Google Cloud Firestore (README.md). `GoogleService-Info.plist` is not included in the repository (README.md).
 - Dependency injection: `FactoryKit` `Container` extension in `berkeley-mobile/BerkeleyMobile+Injection.swift`.
 - Local persistence: `UserDefaults` keys in `Utils/UserDefaults+Extension.swift` (`UserDefaultsKeys`); Firestore persistence cleared in migration.
-- Widget: `BerkeleyMobileWidget/GymOccupancyWidget.swift` (`GymOccupancyProvider` timeline).
+- Widget: `BerkeleyMobileWidget/GymOccupancyWidget.swift` (`GymOccupancyProvider` timeline); `BerkeleyMobileWidget/CampusEventsWidget.swift` (`CampusEventsProvider`, small/medium/large + Lock Screen `.accessoryRectangular`/`.accessoryInline`), backed by the shared `EventsDataService`/`WidgetEvent` data layer (`berkeley-mobile/Events/EventDataSource/`) and an on-disk JSON cache (`BerkeleyMobileWidget/WidgetEventsCache.swift`) for offline resilience.
+- Deep linking: custom URL scheme `berkeleymobile://events?id=<id>` (`berkeley-mobile/Utils/DeepLink.swift`), routed via `DeepLinkRouter` (`berkeley-mobile/Utils/DeepLinkRouter.swift`, FactoryKit-registered) from `SceneDelegate` into `TodayView`/`EventsView`, used by the Campus Events widget to open a specific event's detail.
 
 ## Deployment/CI
 Not found in codebase (no `.github` directory or CI config inspected). Build tooling `xcodebuild` is not available in the analysis environment.

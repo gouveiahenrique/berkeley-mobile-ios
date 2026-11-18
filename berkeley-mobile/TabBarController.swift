@@ -42,6 +42,12 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
             self.selectedIndex = mainIndex
         }
     }
+
+    public func selectTodayTab() {
+        if let todayIndex = self.viewControllers?.firstIndex(of: todayView) {
+            self.selectedIndex = todayIndex
+        }
+    }
     
     private func setupTabbar() {
         delegate = self

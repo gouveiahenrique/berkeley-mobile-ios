@@ -26,6 +26,14 @@
 				<string>com.googleusercontent.apps.592064103331-73lugm9urcosj9uetcsk0bsno0lf5ek2</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>berkeleymobile</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>

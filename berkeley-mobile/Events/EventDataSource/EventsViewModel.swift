@@ -11,44 +11,11 @@ import FirebaseAnalytics
 import SwiftUI
 import os
 
-fileprivate let kEventsDataServiceEndpoint = "Events"
-
-struct BerkeleyEventsDaySnapshot: Codable {
-    var date: Date?
-    var displayDate: String?
-    var scrapedAt: Date?
-    var events: [BerkeleyEvent]
-}
-
-struct BerkeleyEvent: Codable {
-    let startTime: Date?
-    let endTime: Date?
-    let eventName: String?
-    let eventDescription: String?
-    let eventRegisterLinkURL: URL?
-    let eventImageURL: URL?
-    let eventURL: URL?
-    let isAllDay: Bool?
-    let location: String?
-}
-
-class EventsDataService {
-    static var shared = EventsDataService()
-
-    private let db = Firestore.firestore()
-
+extension EventsDataService {
+    /// App-only (UIKit-bound `BMEventCalendarEntry`); not shared with the widget. Behavior unchanged from before the data layer extraction.
     func fetchEventsGroupedByDate() async -> [(Date, [BMEventCalendarEntry])] {
-        guard let snap = try? await db.collection(kEventsDataServiceEndpoint).getDocuments() else {
+        guard let daySnapshots = try? await fetchDaySnapshots() else {
             return []
-        }
-
-        var daySnapshots: [BerkeleyEventsDaySnapshot] = []
-        for doc in snap.documents {
-            do {
-                daySnapshots.append(try doc.data(as: BerkeleyEventsDaySnapshot.self))
-            } catch {
-                Logger.eventsDataService.error("Cannot decode BerkeleyEventsDaySnapshot: \(error.localizedDescription)")
-            }
         }
 
         var eventsPerDay: [(Date, [BMEventCalendarEntry])] = []

@@ -6,12 +6,15 @@
 //  Copyright © 2019 RJ Pimentel. All rights reserved.
 //
 
+import FactoryKit
 import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-    
+
+    @Injected(\.deepLinkRouter) private var deepLinkRouter
+
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(frame: UIScreen.main.bounds)
@@ -19,6 +22,23 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.rootViewController = mainVC
         window?.makeKeyAndVisible()
         window?.windowScene = windowScene
+
+        if let url = connectionOptions.urlContexts.first?.url {
+            handleDeepLink(url)
+        }
+    }
+
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        guard let url = URLContexts.first?.url else { return }
+        handleDeepLink(url)
+    }
+
+    /// Only `berkeleymobile://` URLs are handled here; any other scheme (e.g. a future Google Sign-In
+    /// callback) is intentionally left untouched for its own handler.
+    private func handleDeepLink(_ url: URL) {
+        guard DeepLink.isOurScheme(url) else { return }
+        deepLinkRouter.handle(url)
+        (window?.rootViewController as? TabBarController)?.selectTodayTab()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

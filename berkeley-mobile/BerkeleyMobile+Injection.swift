@@ -20,6 +20,12 @@ extension Container {
     }
     #endif
 
+    var deepLinkRouter: Factory<DeepLinkRouter> {
+        self { @MainActor in
+            DeepLinkRouter()
+        }.singleton
+    }
+
     var diningHallsViewModel: Factory<DiningHallsViewModel> {
         self { DiningHallsViewModel() }.singleton
     }
