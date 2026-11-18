@@ -1,0 +1,454 @@
+/* ─────────────────────────────────────────────────
+   ASDLC-572 Prototype — Berkeley Mobile iOS
+   Design tokens extracted from codebase via CodeGraph
+───────────────────────────────────────────────── */
+
+:root {
+  /* --- Extracted from codebase via CodeGraph --- */
+  /* BMColor.modalBackground (light) = rgb(250,250,250) */
+  --color-bg:          #FAFAFA;
+  /* BMColor.cardBackground (light) = #FFFFFF */
+  --color-surface:     #FFFFFF;
+  /* BMColor.Calendar.blackText (light) = rgb(44,44,45) */
+  --color-label:       #2C2C2D;
+  /* BMColor.Calendar.grayedText (light) = rgb(98,97,98) */
+  --color-muted:       #626162;
+  /* BMColor.mapAnnotationColor = rgb(129,164,255) */
+  --app-accent:        #81A4FF;
+  /* BMColor.Calendar.dayOfWeekHeader = rgb(86,112,185) */
+  --accent-deep:       #5670B9;
+  /* iOS system border */
+  --color-border:      rgba(84, 84, 88, 0.2);
+  /* From AllDayEventBannerView: .gray.opacity(0.5) */
+  --all-day-bg:        rgba(120, 120, 128, 0.3);
+  /* Apercu font family (Berkeley Mobile custom font) */
+  --font-family:       'Apercu', -apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif;
+  /* From clipShape(RoundedRectangle(cornerRadius: 10/12)) */
+  --radius-card:       12px;
+  --radius-sm:         10px;
+  /* Spacing from SwiftUI VStack(spacing: 16) .padding(.horizontal) */
+  --spacing-unit:      8px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* BMColor.modalBackground (dark) = rgb(65,65,65) = #414141 */
+    --color-bg:      #1C1C1E;
+    /* BMColor.cardBackground (dark) = rgb(72,71,71) = #484747 */
+    --color-surface: #2C2C2E;
+    /* BMColor.Calendar.blackText (dark) = rgb(250,250,250) */
+    --color-label:   #FAFAFA;
+    /* BMColor.Calendar.grayedText (dark) = rgb(170,170,170) */
+    --color-muted:   #AAAAAA;
+    --color-border:  rgba(84, 84, 88, 0.6);
+    --all-day-bg:    rgba(120, 120, 128, 0.45);
+  }
+}
+
+/* ─── Reset ─── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  background: #0d0d1a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding: 24px 16px 40px;
+  gap: 24px;
+}
+
+/* ─── Demo Controls (outside iPhone frame) ─── */
+.demo-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: #fff;
+}
+
+.demo-title {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  opacity: 0.9;
+}
+
+.demo-subtitle {
+  font-size: 12px;
+  opacity: 0.5;
+}
+
+.demo-toggle {
+  display: flex;
+  background: rgba(255,255,255,0.12);
+  border-radius: 10px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.demo-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.6);
+  font-family: var(--font-family);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.demo-btn.active {
+  background: rgba(255,255,255,0.22);
+  color: #fff;
+}
+
+/* ─── iPhone 15 Pro Frame ─── */
+.iphone-frame {
+  width: 393px;
+  height: 852px;
+  background: #000;
+  border-radius: 55px;
+  box-shadow:
+    0 0 0 2px #3a3a3c,
+    0 0 0 6px #1c1c1e,
+    0 40px 80px rgba(0,0,0,0.6);
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.dynamic-island {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 34px;
+  background: #000;
+  border-radius: 20px;
+  z-index: 100;
+}
+
+.screen-area {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 55px;
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+/* ─── Screen panels ─── */
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(30px);
+  transition: opacity 0.28s ease, transform 0.28s ease;
+}
+
+.screen.active {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateX(0);
+}
+
+/* ─── Status Bar ─── */
+.status-bar {
+  height: 54px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 24px 8px;
+  flex-shrink: 0;
+  color: var(--color-label);
+}
+
+.status-time {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+}
+
+.status-icons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-label);
+}
+
+/* ─── Navigation Bar ─── */
+.nav-bar {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  flex-shrink: 0;
+  border-bottom: 0.5px solid var(--color-border);
+}
+
+.nav-back {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  color: var(--app-accent);
+  font-family: var(--font-family);
+  font-size: 17px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.nav-back svg {
+  margin-top: 1px;
+}
+
+.nav-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--color-label);
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.nav-action {
+  background: none;
+  border: none;
+  color: var(--app-accent);
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+/* ─── Scrollable Content ─── */
+.scroll-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.scroll-content::-webkit-scrollbar {
+  display: none;
+}
+
+.detail-scroll-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px 16px 32px;
+}
+
+/* ─── Header Card (BMDetailHeaderView ZStack) ─── */
+.header-card {
+  position: relative;
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+}
+
+/* Background event image (simulated with CSS gradient — no external URLs) */
+.header-bg-image {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+}
+
+.header-bg-exhibit {
+  background: linear-gradient(135deg, #3d5a9e 0%, #6b8ed4 30%, #9b7ec8 65%, #c47eb4 100%);
+}
+
+.header-bg-workshop {
+  background: linear-gradient(135deg, #2d6a4f 0%, #40916c 30%, #74c69d 65%, #b7e4c7 100%);
+}
+
+/* Frosted glass overlay (SwiftUI .regularMaterial equivalent) */
+.header-overlay {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  background: rgba(248, 248, 250, 0.82);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-radius: var(--radius-card);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 260px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .header-overlay {
+    background: rgba(44, 44, 46, 0.85);
+  }
+}
+
+/* Thumbnail image (centered, 130x130) */
+.thumbnail-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.thumbnail-image {
+  width: 110px;
+  height: 110px;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  flex-shrink: 0;
+}
+
+/* Event name — BMFont.bold(20) */
+.event-name {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--color-label);
+  line-height: 1.3;
+  letter-spacing: -0.3px;
+}
+
+/* Info rows container */
+.info-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* EventDetailRow: HStack { icon + text } */
+.detail-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--color-label);
+  min-height: 20px;
+}
+
+.row-icon {
+  flex-shrink: 0;
+  opacity: 0.7;
+  color: var(--color-muted);
+}
+
+/* Row text — BMFont.regular(12) */
+.row-text {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--color-label);
+  line-height: 1.4;
+}
+
+/* ─── All Day Capsule ───────────────────────────
+   Replaces the time text for All Day events.
+   Styled after AllDayEventBannerView's capsule shape
+   and TagView's pill pattern from the codebase.
+   Keeps clock icon in leading position (BR-004).
+─────────────────────────────────────────────── */
+.all-day-capsule {
+  display: inline-flex;
+  align-items: center;
+  background: var(--all-day-bg);
+  border-radius: 100px; /* full capsule / pill */
+  padding: 2px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1px;
+  color: var(--color-label);
+  line-height: 1.6;
+  /* Subtle border for definition in light mode */
+  border: 0.5px solid rgba(120, 120, 128, 0.25);
+}
+
+@media (prefers-color-scheme: dark) {
+  .all-day-capsule {
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+}
+
+/* ─── Description Card (BMDetailDescriptionView) ─── */
+.description-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-card);
+  padding: 16px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+.section-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-label);
+  margin-bottom: 10px;
+}
+
+.section-body {
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--color-muted);
+  line-height: 1.6;
+}
+
+/* ─── Action Buttons (BMActionButton) ─── */
+.buttons-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.action-button {
+  width: 100%;
+  padding: 14px;
+  border-radius: var(--radius-sm);
+  border: none;
+  font-family: var(--font-family);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: -0.1px;
+  /* From BMColor.selectedButtonBackground = rgb(251,155,142) */
+  background: #FB9B8E;
+  color: #fff;
+  transition: opacity 0.15s;
+}
+
+.action-button:active {
+  opacity: 0.78;
+}
+
+.action-button-secondary {
+  background: var(--color-surface);
+  color: var(--app-accent);
+  border: 1px solid var(--color-border);
+}
+
+/* ─── Home Indicator ─── */
+.home-indicator {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 134px;
+  height: 5px;
+  background: var(--color-label);
+  border-radius: 3px;
+  opacity: 0.2;
+}

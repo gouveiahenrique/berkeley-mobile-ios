@@ -144,4 +144,14 @@ extension BMEventCalendarEntry {
         sourceLink: "https://berkeley.edu/event",
         type: "Default"
     )
+
+    static let sampleAllDayEntry = BMEventCalendarEntry(
+        name: "Cal Day",
+        date: Date().getStartOfDay(),
+        end: Date().getStartOfDay().addingTimeInterval(86399),
+        descriptionText: "An annual open house celebrating UC Berkeley.",
+        location: "UC Berkeley Campus",
+        type: "Default",
+        isAllDay: true
+    )
 }
